@@ -192,8 +192,8 @@ contract ReservoirLibraryTest is BaseTest {
 
         // arrange
         uint256 lSwapFee = _stablePair.swapFee();
-        uint64 lToken0PrecisionMultiplier = ReservoirLibrary.getPrecisionMultiplier(_stablePair.token0());
-        uint64 lToken1PrecisionMultiplier = ReservoirLibrary.getPrecisionMultiplier(_stablePair.token1());
+        uint64 lToken0PrecisionMultiplier = ReservoirLibrary.getPrecisionMultiplier(address(_stablePair.token0()));
+        uint64 lToken1PrecisionMultiplier = ReservoirLibrary.getPrecisionMultiplier(address(_stablePair.token1()));
         uint64 lA = ReservoirLibrary.getAmplificationCoefficient(address(_stablePair));
 
         // act
