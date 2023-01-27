@@ -45,8 +45,8 @@ contract QuoterTest is BaseTest {
 
     function testQuoteAddLiquidity_ConstantProduct_Balanced(uint256 aAmountAToAdd, uint256 aAmountBToAdd) public {
         // assume
-        uint256 lAmountAToAdd = bound(aAmountAToAdd, 1000, type(uint112).max - INITIAL_MINT_AMOUNT);
-        uint256 lAmountBToAdd = bound(aAmountBToAdd, 1000, type(uint112).max - INITIAL_MINT_AMOUNT);
+        uint256 lAmountAToAdd = bound(aAmountAToAdd, 1000, type(uint104).max - INITIAL_MINT_AMOUNT);
+        uint256 lAmountBToAdd = bound(aAmountBToAdd, 1000, type(uint104).max - INITIAL_MINT_AMOUNT);
 
         // act
         (uint256 lAmountAOptimal, uint256 lAmountBOptimal, uint256 lLiq) =
@@ -73,8 +73,8 @@ contract QuoterTest is BaseTest {
         // assume
         uint256 lAmountBToMint = bound(aAmountBToMint, 100_000e18, 400_000e18);
         uint256 lAmountCToMint = bound(aAmountCToMint, 600_000e18, 2_000_000e18);
-        uint256 lAmountBToAdd = bound(aAmountBToAdd, 1e6, type(uint112).max - lAmountBToMint);
-        uint256 lAmountCToAdd = bound(aAmountCToAdd, 1e6, type(uint112).max - lAmountCToMint);
+        uint256 lAmountBToAdd = bound(aAmountBToAdd, 1e6, type(uint104).max - lAmountBToMint);
+        uint256 lAmountCToAdd = bound(aAmountCToAdd, 1e6, type(uint104).max - lAmountCToMint);
 
         // arrange
         ConstantProductPair lPair = ConstantProductPair(_createPair(address(_tokenB), address(_tokenC), 0));
@@ -107,8 +107,8 @@ contract QuoterTest is BaseTest {
 
     function testQuoteAddLiquidity_Stable_Balanced(uint256 aAmountAToAdd, uint256 aAmountBToAdd) public {
         // assume
-        uint256 lAmountAToAdd = bound(aAmountAToAdd, 1000, type(uint112).max - INITIAL_MINT_AMOUNT);
-        uint256 lAmountBToAdd = bound(aAmountBToAdd, 1000, type(uint112).max - INITIAL_MINT_AMOUNT);
+        uint256 lAmountAToAdd = bound(aAmountAToAdd, 1000, type(uint104).max - INITIAL_MINT_AMOUNT);
+        uint256 lAmountBToAdd = bound(aAmountBToAdd, 1000, type(uint104).max - INITIAL_MINT_AMOUNT);
 
         // act
         (uint256 lAmountAOptimal, uint256 lAmountBOptimal, uint256 lLiq) =
@@ -135,8 +135,8 @@ contract QuoterTest is BaseTest {
         // assume
         uint256 lAmountBToMint = bound(aAmountBToMint, 100_000e18, 400_000e18);
         uint256 lAmountCToMint = bound(aAmountCToMint, 600_000e18, 2_000_000e18);
-        uint256 lAmountBToAdd = bound(aAmountBToAdd, 1000e10, type(uint112).max - lAmountBToMint);
-        uint256 lAmountCToAdd = bound(aAmountCToAdd, 1000e10, type(uint112).max - lAmountCToMint);
+        uint256 lAmountBToAdd = bound(aAmountBToAdd, 1000e10, type(uint104).max - lAmountBToMint);
+        uint256 lAmountCToAdd = bound(aAmountCToAdd, 1000e10, type(uint104).max - lAmountCToMint);
 
         // arrange
         StablePair lPair = StablePair(_createPair(address(_tokenB), address(_tokenC), 1));
@@ -189,9 +189,9 @@ contract QuoterTest is BaseTest {
         public
     {
         // assume
-        uint256 lAmtIn = bound(aAmtIn, 1, type(uint112).max);
-        uint256 lReserveIn = bound(aReserveIn, 1, type(uint112).max);
-        uint256 lReserveOut = bound(aReserveOut, 1, type(uint112).max);
+        uint256 lAmtIn = bound(aAmtIn, 1, type(uint104).max);
+        uint256 lReserveIn = bound(aReserveIn, 1, type(uint104).max);
+        uint256 lReserveOut = bound(aReserveOut, 1, type(uint104).max);
         uint256 lSwapFee = bound(aSwapFee, 0, 200); // max swap fee is 2% configured in Pair.sol
 
         // act
@@ -210,9 +210,9 @@ contract QuoterTest is BaseTest {
         uint256 aAmpCoeff
     ) public {
         // assume
-        uint256 lReserveIn = bound(aReserveIn, 1e6, type(uint112).max);
-        uint256 lReserveOut = bound(aReserveOut, lReserveIn / 1e3, Math.min(lReserveIn * 1e3, type(uint112).max));
-        uint256 lAmtIn = bound(aAmtIn, 1e6, type(uint112).max);
+        uint256 lReserveIn = bound(aReserveIn, 1e6, type(uint104).max);
+        uint256 lReserveOut = bound(aReserveOut, lReserveIn / 1e3, Math.min(lReserveIn * 1e3, type(uint104).max));
+        uint256 lAmtIn = bound(aAmtIn, 1e6, type(uint104).max);
         uint256 lSwapFee = bound(aSwapFee, 0, 200);
         uint256 lAmpCoefficient =
             bound(aAmpCoeff, StableMath.MIN_A * StableMath.A_PRECISION, StableMath.MAX_A * StableMath.A_PRECISION);
@@ -229,9 +229,9 @@ contract QuoterTest is BaseTest {
 
     function testGetAmountsOut(uint256 aAmtIn, uint256 aAmtB, uint256 aAmtD) public {
         // assume
-        uint256 lAmtIn = bound(aAmtIn, 1e6, type(uint112).max);
-        uint256 lAmtBToMint = bound(aAmtB, 1001, type(uint112).max / 2);
-        uint256 lAmtDToMint = bound(aAmtD, 1001, type(uint112).max / 2);
+        uint256 lAmtIn = bound(aAmtIn, 1e6, type(uint104).max);
+        uint256 lAmtBToMint = bound(aAmtB, 1001, type(uint104).max / 2);
+        uint256 lAmtDToMint = bound(aAmtD, 1001, type(uint104).max / 2);
 
         // arrange
         ConstantProductPair lNewPair = ConstantProductPair(_createPair(address(_tokenB), address(_tokenD), 0));

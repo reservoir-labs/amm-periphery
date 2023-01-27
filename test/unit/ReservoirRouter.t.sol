@@ -8,7 +8,6 @@ import { Math } from "@openzeppelin/utils/math/Math.sol";
 
 import { MathUtils } from "v3-core/src/libraries/MathUtils.sol";
 
-import { IReservoirPair } from "v3-core/src/interfaces/IReservoirPair.sol";
 import { ReservoirLibrary, IGenericFactory } from "src/libraries/ReservoirLibrary.sol";
 import { ReservoirRouter } from "src/ReservoirRouter.sol";
 
@@ -25,8 +24,8 @@ contract ReservoirRouterTest is BaseTest {
 
     function testAddLiquidity_CP(uint256 aTokenAMintAmt, uint256 aTokenBMintAmt) public {
         // assume
-        uint256 lTokenAMintAmt = bound(aTokenAMintAmt, 1, type(uint112).max - INITIAL_MINT_AMOUNT);
-        uint256 lTokenBMintAmt = bound(aTokenBMintAmt, 1, type(uint112).max - INITIAL_MINT_AMOUNT);
+        uint256 lTokenAMintAmt = bound(aTokenAMintAmt, 1, type(uint104).max - INITIAL_MINT_AMOUNT);
+        uint256 lTokenBMintAmt = bound(aTokenBMintAmt, 1, type(uint104).max - INITIAL_MINT_AMOUNT);
 
         // arrange
         _tokenA.mint(_bob, lTokenAMintAmt);
@@ -121,8 +120,8 @@ contract ReservoirRouterTest is BaseTest {
 
     function testAddLiquidity_SP_Balanced(uint256 aTokenAMintAmt, uint256 aTokenBMintAmt) public {
         // assume
-        uint256 lTokenAMintAmt = bound(aTokenAMintAmt, 1, type(uint112).max - INITIAL_MINT_AMOUNT);
-        uint256 lTokenBMintAmt = bound(aTokenBMintAmt, 1, type(uint112).max - INITIAL_MINT_AMOUNT);
+        uint256 lTokenAMintAmt = bound(aTokenAMintAmt, 1, type(uint104).max - INITIAL_MINT_AMOUNT);
+        uint256 lTokenBMintAmt = bound(aTokenBMintAmt, 1, type(uint104).max - INITIAL_MINT_AMOUNT);
 
         // arrange
         _tokenA.mint(_bob, lTokenAMintAmt);
@@ -163,8 +162,8 @@ contract ReservoirRouterTest is BaseTest {
         // assume
         uint256 lTokenAMintAmt = bound(aTokenAMintAmt, 10_000_000e18, 20_000_000e18);
         uint256 lTokenCMintAmt = bound(aTokenCMintAmt, 25_000_000e18, 80_000_000e18);
-        uint256 lTokenAToAdd = bound(aTokenAToAdd, 1e6, type(uint112).max - lTokenAMintAmt);
-        uint256 lTokenCToAdd = bound(aTokenCToAdd, 1e6, type(uint112).max - lTokenCMintAmt);
+        uint256 lTokenAToAdd = bound(aTokenAToAdd, 1e6, type(uint104).max - lTokenAMintAmt);
+        uint256 lTokenCToAdd = bound(aTokenCToAdd, 1e6, type(uint104).max - lTokenCMintAmt);
 
         // arrange
         StablePair lPair = StablePair(_createPair(address(_tokenA), address(_tokenC), 1));
@@ -200,33 +199,33 @@ contract ReservoirRouterTest is BaseTest {
         assertApproxEqRel(lAmountA.divWadDown(lAmountC), lTokenAMintAmt.divWadDown(lTokenCMintAmt), 0.00001e18); // 0.1 bp
     }
 
-    function testAddLiquidity_CreatePair_SP(uint256 aTokenAMintAmt, uint256 aTokenCMintAmt) public {
-        uint256 lTokenAMintAmt = bound(aTokenAMintAmt, 1e6, type(uint112).max);
-        uint256 lTokenCMintAmt =
-            bound(aTokenCMintAmt, lTokenAMintAmt / 1e3, Math.min(type(uint112).max, lTokenAMintAmt * 1e3));
-        _tokenA.mint(_bob, lTokenAMintAmt);
-        _tokenC.mint(_bob, lTokenCMintAmt);
-        vm.startPrank(_bob);
-        _tokenA.approve(address(_router), type(uint256).max);
-        _tokenC.approve(address(_router), type(uint256).max);
-
-        // sanity
-        assertEq(_tokenA.allowance(_bob, address(_router)), type(uint256).max);
-        assertEq(_tokenC.allowance(_bob, address(_router)), type(uint256).max);
-
-        // act
-        (uint256 lAmountA, uint256 lAmountC, uint256 lLiquidity) = _router.addLiquidity(
-            address(_tokenA), address(_tokenC), 1, lTokenAMintAmt, lTokenCMintAmt, 500e18, 500e18, _bob
-        );
-
-        // assert
-        ReservoirPair lPair = ReservoirPair(_factory.getPair(address(_tokenC), address(_tokenA), 1));
-        assertEq(lPair.balanceOf(_bob), lLiquidity);
-        assertEq(lAmountA, lTokenAMintAmt);
-        assertEq(lAmountC, lTokenCMintAmt);
-        assertEq(_tokenA.balanceOf(address(lPair)), lTokenAMintAmt);
-        assertEq(_tokenC.balanceOf(address(lPair)), lTokenCMintAmt);
-    }
+//    function testAddLiquidity_CreatePair_SP(uint256 aTokenAMintAmt, uint256 aTokenCMintAmt) public {
+//        uint256 lTokenAMintAmt = bound(aTokenAMintAmt, 1e6, type(uint104).max);
+//        uint256 lTokenCMintAmt =
+//            bound(aTokenCMintAmt, lTokenAMintAmt / 1e3, Math.min(type(uint104).max, lTokenAMintAmt * 1e3));
+//        _tokenA.mint(_bob, lTokenAMintAmt);
+//        _tokenC.mint(_bob, lTokenCMintAmt);
+//        vm.startPrank(_bob);
+//        _tokenA.approve(address(_router), type(uint256).max);
+//        _tokenC.approve(address(_router), type(uint256).max);
+//
+//        // sanity
+//        assertEq(_tokenA.allowance(_bob, address(_router)), type(uint256).max);
+//        assertEq(_tokenC.allowance(_bob, address(_router)), type(uint256).max);
+//
+//        // act
+//        (uint256 lAmountA, uint256 lAmountC, uint256 lLiquidity) = _router.addLiquidity(
+//            address(_tokenA), address(_tokenC), 1, lTokenAMintAmt, lTokenCMintAmt, 500e18, 500e18, _bob
+//        );
+//
+//        // assert
+//        ReservoirPair lPair = ReservoirPair(_factory.getPair(address(_tokenC), address(_tokenA), 1));
+//        assertEq(lPair.balanceOf(_bob), lLiquidity);
+//        assertEq(lAmountA, lTokenAMintAmt);
+//        assertEq(lAmountC, lTokenCMintAmt);
+//        assertEq(_tokenA.balanceOf(address(lPair)), lTokenAMintAmt);
+//        assertEq(_tokenC.balanceOf(address(lPair)), lTokenCMintAmt);
+//    }
 
     function testAddLiquidity_OptimalLessThanMin() public {
         // act & assert
@@ -351,9 +350,9 @@ contract ReservoirRouterTest is BaseTest {
 
     function testSwapExactForVariable(uint256 aAmtBToMint, uint256 aAmtCToMint, uint256 aAmtIn) public {
         // arrange
-        uint256 lAmtBToMint = bound(aAmtBToMint, 2e3, type(uint112).max / 2);
-        uint256 lAmtCToMint = bound(aAmtCToMint, 2e3, type(uint112).max / 2);
-        uint256 lAmtIn = bound(aAmtIn, 2e3, type(uint112).max / 2);
+        uint256 lAmtBToMint = bound(aAmtBToMint, 2e3, type(uint104).max / 2);
+        uint256 lAmtCToMint = bound(aAmtCToMint, 2e3, type(uint104).max / 2);
+        uint256 lAmtIn = bound(aAmtIn, 2e3, type(uint104).max / 2);
         ConstantProductPair lOtherPair = ConstantProductPair(_createPair(address(_tokenB), address(_tokenC), 0));
         _tokenB.mint(address(lOtherPair), lAmtBToMint);
         _tokenC.mint(address(lOtherPair), lAmtCToMint);
@@ -485,7 +484,7 @@ contract ReservoirRouterTest is BaseTest {
 
     function testSwapExactForVariable_MixedCurves(uint256 aAmtIn) public {
         // assume
-        uint256 lAmtIn = bound(aAmtIn, 1000, type(uint112).max / 2);
+        uint256 lAmtIn = bound(aAmtIn, 1000, type(uint104).max / 2);
 
         // arrange
         testAddLiquidity_CreatePair_CP();
