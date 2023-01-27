@@ -100,7 +100,7 @@ contract ReservoirRouter is
         private
         returns (uint256 rFinalAmount)
     {
-        require(aAmountIn <= type(uint112).max, "RR: AMOUNT_IN_TOO_LARGE");
+        require(aAmountIn <= type(uint104).max, "RR: AMOUNT_IN_TOO_LARGE");
         int256 lAmount = int256(aAmountIn);
         for (uint256 i = 0; i < aPath.length - 1;) {
             (address lInput, address lOutput) = (aPath[i], aPath[i + 1]);
