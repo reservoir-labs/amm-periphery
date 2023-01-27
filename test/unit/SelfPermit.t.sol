@@ -24,6 +24,7 @@ contract SelfPermitTest is BaseTest {
 
     function _getPermitSignature(TestERC20PermitAllowed aToken, address aSpender, uint256 aValue, uint256 aDeadline)
         private
+        view
         returns (uint8 rV, bytes32 rR, bytes32 rS)
     {
         bytes32 lDigest = keccak256(
@@ -127,7 +128,7 @@ contract SelfPermitTest is BaseTest {
         assertEq(_testERC20.allowance(_owner, address(_router)), lValue);
     }
 
-    function testSelfPermitAllowed(uint256 aValue) external {
+    function testSelfPermitAllowed() external {
         // arrange
         uint256 lDeadline = block.timestamp + 100;
         (uint8 lV, bytes32 lR, bytes32 lS) =
