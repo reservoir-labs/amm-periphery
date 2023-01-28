@@ -27,12 +27,12 @@ contract SetupScaffold is BaseScript {
     ReservoirRouter private _router;
     Quoter private _quoter;
 
-    function _setupPeriphery() internal {
+    function _deployPeriphery() internal {
         _router = new ReservoirRouter(address(_factory), WAVAX_AVAX_MAINNET);
         _quoter = new Quoter(address(_factory), WAVAX_AVAX_MAINNET);
     }
 
-    function _setupCore() internal {
+    function _deployCore() internal {
         _setup();
 
         vm.startBroadcast();
@@ -58,8 +58,8 @@ contract SetupScaffold is BaseScript {
         vm.stopBroadcast();
     }
 
-    function main() external {
-        _setupCore();
-        _setupPeriphery();
+    function deploy() external {
+        _deployCore();
+        _deployPeriphery();
     }
 }
