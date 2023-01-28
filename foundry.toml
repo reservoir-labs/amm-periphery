@@ -9,6 +9,7 @@ verbosity      = 3
 fs_permissions = [
     { access = "write", path = "./scripts/optimized-stable-mint-burn-key" },
     { access = "write", path = "./scripts/unoptimized-stable-mint-burn-key" },
+    { access = "read", path = "./out/" }
 ]
 
 [profile.ci.fuzz]

@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
-contract setup_scaffold {
-    constructor(){
+import { VaultScript } from "v3-core/scripts/test_deploy_curves.sol";
+
+contract SetupScaffold is VaultScript {
+    function main() external {
 
     }
 }
