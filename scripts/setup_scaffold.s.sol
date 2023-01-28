@@ -27,12 +27,12 @@ contract SetupScaffold is BaseScript {
     ReservoirRouter private _router;
     Quoter private _quoter;
 
-    function _deployPeriphery() internal {
+    function _deployPeriphery() private {
         _router = new ReservoirRouter(address(_factory), WAVAX_AVAX_MAINNET);
         _quoter = new Quoter(address(_factory), WAVAX_AVAX_MAINNET);
     }
 
-    function _deployCore() internal {
+    function _deployCore() private {
         _setup();
 
         vm.startBroadcast();
@@ -61,7 +61,7 @@ contract SetupScaffold is BaseScript {
         require(lAllPairs.length == 3, "Wrong number of pairs created");
     }
 
-    function deploy() external {
+    function run() external {
         _deployCore();
         _deployPeriphery();
     }

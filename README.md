@@ -42,8 +42,8 @@ forge test
 To deploy this onto a testnet / mainnet, run:
 
 ```bash
-forge script scripts/setup_scaffold.sol --target-contract SetupScaffold 
---sig "main()" --rpc-url "http://127.0.0.1:8545"  -vv
+forge script scripts/setup_scaffold.s.sol --target-contract SetupScaffold 
+--sig "run()" --rpc-url "http://127.0.0.1:8545"  -vv
 ```
 
 ## Contributing
