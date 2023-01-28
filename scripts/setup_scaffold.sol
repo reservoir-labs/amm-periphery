@@ -53,6 +53,7 @@ contract SetupScaffold is BaseScript {
         _factory.write("SP::amplificationCoefficient", DEFAULT_AMP_COEFF);
 
         _factory.createPair(WAVAX_AVAX_MAINNET, USDC_AVAX_MAINNET, 0);
+        _factory.createPair(WAVAX_AVAX_MAINNET, USDC_AVAX_MAINNET, 1);
         _factory.createPair(USDC_AVAX_MAINNET, USDT_AVAX_MAINNET, 1);
         vm.stopBroadcast();
     }
