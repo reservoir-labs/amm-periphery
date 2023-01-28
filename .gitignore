@@ -2,6 +2,7 @@
 /cache
 /out
 /node_modules
+/broadcast
 
 # slither
 /slither-report.md
