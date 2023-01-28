@@ -56,6 +56,9 @@ contract SetupScaffold is BaseScript {
         _factory.createPair(WAVAX_AVAX_MAINNET, USDC_AVAX_MAINNET, 1);
         _factory.createPair(USDC_AVAX_MAINNET, USDT_AVAX_MAINNET, 1);
         vm.stopBroadcast();
+
+        address[] memory lAllPairs = _factory.allPairs();
+        require(lAllPairs.length == 3, "Wrong number of pairs created");
     }
 
     function deploy() external {
