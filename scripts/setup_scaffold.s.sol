@@ -27,15 +27,20 @@ contract SetupScaffold is BaseScript {
     ReservoirRouter private _router;
     Quoter private _quoter;
 
+    // default private key from anvil
+    uint256 private _defaultPrivateKey = 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80;
+
     function _deployPeriphery() private {
+        vm.startBroadcast(_defaultPrivateKey);
         _router = new ReservoirRouter(address(_factory), WAVAX_AVAX_MAINNET);
         _quoter = new Quoter(address(_factory), WAVAX_AVAX_MAINNET);
+        vm.stopBroadcast();
     }
 
     function _deployCore() private {
-        _setup();
+        _setup(_defaultPrivateKey);
 
-        vm.startBroadcast();
+        vm.startBroadcast(_defaultPrivateKey);
         // set shared variables
         _factory.write("Shared::platformFee", DEFAULT_PLATFORM_FEE);
         // _factory.write("Shared::platformFeeTo", _platformFeeTo);
@@ -53,12 +58,12 @@ contract SetupScaffold is BaseScript {
         _factory.write("SP::amplificationCoefficient", DEFAULT_AMP_COEFF);
 
         _factory.createPair(WAVAX_AVAX_MAINNET, USDC_AVAX_MAINNET, 0);
-        _factory.createPair(WAVAX_AVAX_MAINNET, USDC_AVAX_MAINNET, 1);
-        _factory.createPair(USDC_AVAX_MAINNET, USDT_AVAX_MAINNET, 1);
+        // _factory.createPair(USDC_AVAX_MAINNET, USDT_AVAX_MAINNET, 1);
+        // _factory.createPair(WAVAX_AVAX_MAINNET, USDC_AVAX_MAINNET, 1);
         vm.stopBroadcast();
 
         address[] memory lAllPairs = _factory.allPairs();
-        require(lAllPairs.length == 3, "Wrong number of pairs created");
+        require(lAllPairs.length == 1, "Wrong number of pairs created");
     }
 
     function run() external {
