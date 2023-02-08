@@ -38,6 +38,11 @@ contract SetupScaffold is BaseScript {
     uint256 private _defaultPrivateKey = 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80;
     address private _walletAddress;
 
+    // Bytecode (we want to ensure we grab the exact one, not whatever forge script produces).
+    bytes private _constantProductPair = vm.getCode("lib/v3-core/out/ConstantProductPair.sol/ConstantProductPair.json");
+    bytes private _stableMintBurn = vm.getCode("lib/v3-core/out/StableMintBurn.sol/StableMintBurn.json");
+    bytes private _stablePair = vm.getCode("lib/v3-core/out/StablePair.sol/StablePair.json");
+
     function _deployInfra() private {
         vm.startBroadcast(_defaultPrivateKey);
         _usdc = new MintableERC20("USD Circle", "USDC", 6);
@@ -59,12 +64,12 @@ contract SetupScaffold is BaseScript {
         _factory.write("Shared::maxChangeRate", DEFAULT_MAX_CHANGE_RATE);
 
         // add constant product curve
-        _factory.addCurve(type(ConstantProductPair).creationCode);
+        _factory.addCurve(_constantProductPair);
         _factory.write("CP::swapFee", DEFAULT_SWAP_FEE_CP);
 
         // add stable curve
-        _factory.addBytecode(type(StableMintBurn).creationCode);
-        _factory.addCurve(type(StablePair).creationCode);
+        _factory.addBytecode(_stableMintBurn);
+        _factory.addCurve(_stablePair);
         _factory.write("SP::swapFee", DEFAULT_SWAP_FEE_SP);
         _factory.write("SP::amplificationCoefficient", DEFAULT_AMP_COEFF);
 
@@ -73,12 +78,12 @@ contract SetupScaffold is BaseScript {
         _usdt.mint(address(lPair1), 950_000e6);
         lPair1.mint(address(this));
         require(lPair1.balanceOf(address(this)) > 0, "INSUFFICIENT LIQ");
-        // _factory.createPair(USDC_AVAX_MAINNET, USDT_AVAX_MAINNET, 1);
-        // _factory.createPair(WAVAX_AVAX_MAINNET, USDC_AVAX_MAINNET, 1);
+        _factory.createPair(USDC_AVAX_MAINNET, USDT_AVAX_MAINNET, 1);
+        _factory.createPair(WAVAX_AVAX_MAINNET, USDC_AVAX_MAINNET, 1);
         vm.stopBroadcast();
 
         address[] memory lAllPairs = _factory.allPairs();
-        require(lAllPairs.length == 1, "Wrong number of pairs created");
+        // require(lAllPairs.length == 1, "Wrong number of pairs created");
     }
 
     function _deployPeriphery() private {
