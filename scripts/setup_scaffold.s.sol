@@ -48,8 +48,6 @@ contract SetupScaffold is BaseScript {
         _usdc = new MintableERC20("USD Circle", "USDC", 6);
         _usdt = new MintableERC20("USD Tether", "USDT", 6);
         _wavax = new WETH();
-        _wavax.deposit{value: 5_000 ether}();
-        require(_wavax.balanceOf(_walletAddress) == 5_000 ether, "WAVAX AMT WRONG");
         vm.stopBroadcast();
     }
 
@@ -78,8 +76,8 @@ contract SetupScaffold is BaseScript {
         _usdt.mint(address(lPair1), 950_000e6);
         lPair1.mint(address(this));
         require(lPair1.balanceOf(address(this)) > 0, "INSUFFICIENT LIQ");
-        _factory.createPair(USDC_AVAX_MAINNET, USDT_AVAX_MAINNET, 1);
-        _factory.createPair(WAVAX_AVAX_MAINNET, USDC_AVAX_MAINNET, 1);
+//        _factory.createPair(USDC_AVAX_MAINNET, USDT_AVAX_MAINNET, 1);
+//        _factory.createPair(WAVAX_AVAX_MAINNET, USDC_AVAX_MAINNET, 1);
         vm.stopBroadcast();
 
         address[] memory lAllPairs = _factory.allPairs();
@@ -87,9 +85,46 @@ contract SetupScaffold is BaseScript {
     }
 
     function _deployPeriphery() private {
+
+        _router = ReservoirRouter(
+            payable(
+                Create2Lib.computeAddress(
+                    CREATE2_FACTORY,
+                    abi.encodePacked(type(ReservoirRouter).creationCode, abi.encode(address(_factory), address(_wavax))),
+                    bytes32(uint256(0))
+                )
+            )
+        );
+        if (address(_router).code.length == 0) {
+            vm.broadcast(_defaultPrivateKey);
+            ReservoirRouter lRouter = new ReservoirRouter{salt: bytes32(uint256(0))}(address(_factory), address(_wavax));
+
+            require(lRouter == _router, "Create2 Address Mismatch for ReservoirRouter");
+        }
+
+        _quoter = Quoter(
+            Create2Lib.computeAddress(
+                CREATE2_FACTORY,
+                abi.encodePacked(type(Quoter).creationCode, abi.encode(address(_factory), address(_wavax))),
+                bytes32(uint256(0))
+            )
+        );
+        if (address(_quoter).code.length == 0) {
+            vm.broadcast(_defaultPrivateKey);
+            Quoter lQuoter = new Quoter{salt: bytes32(uint256(0))}(address(_factory), address(_wavax));
+
+            require(lQuoter == _quoter, "Create2 Address mismatch for Quoter");
+        }
+    }
+
+    function _getRichAndApproveRouter() private {
         vm.startBroadcast(_defaultPrivateKey);
-        _router = new ReservoirRouter(address(_factory), WAVAX_AVAX_MAINNET);
-        _quoter = new Quoter(address(_factory), WAVAX_AVAX_MAINNET);
+        _usdc.mint(_walletAddress, 1_000_000e6);
+        _usdt.mint(_walletAddress, 1_000_000e6);
+        _wavax.deposit{value: 5_000 ether}();
+        require(_wavax.balanceOf(_walletAddress) == 5_000 ether, "WAVAX AMT WRONG");
+        _usdc.approve(address(_router), type(uint256).max);
+        _usdt.approve(address(_router), type(uint256).max);
         vm.stopBroadcast();
     }
 
@@ -98,5 +133,6 @@ contract SetupScaffold is BaseScript {
         _deployInfra();
         _deployCore();
         _deployPeriphery();
+        _getRichAndApproveRouter();
     }
 }
