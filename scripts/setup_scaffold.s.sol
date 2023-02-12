@@ -76,7 +76,7 @@ contract SetupScaffold is BaseScript {
         _usdt.mint(address(lPair1), 950_000e6);
         lPair1.mint(address(this));
         require(lPair1.balanceOf(address(this)) > 0, "INSUFFICIENT LIQ");
-//        _factory.createPair(USDC_AVAX_MAINNET, USDT_AVAX_MAINNET, 1);
+        _factory.createPair(address(_usdc), address(_usdt), 1);
 //        _factory.createPair(WAVAX_AVAX_MAINNET, USDC_AVAX_MAINNET, 1);
         vm.stopBroadcast();
 
