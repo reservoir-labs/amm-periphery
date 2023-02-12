@@ -121,8 +121,8 @@ contract SetupScaffold is BaseScript {
         vm.startBroadcast(_defaultPrivateKey);
         _usdc.mint(_walletAddress, 1_000_000e6);
         _usdt.mint(_walletAddress, 1_000_000e6);
-        _wavax.deposit{value: 5_000 ether}();
-        require(_wavax.balanceOf(_walletAddress) == 5_000 ether, "WAVAX AMT WRONG");
+        // _wavax.deposit{value: 5_000 ether}();
+        // require(_wavax.balanceOf(_walletAddress) == 5_000 ether, "WAVAX AMT WRONG");
         _usdc.approve(address(_router), type(uint256).max);
         _usdt.approve(address(_router), type(uint256).max);
         vm.stopBroadcast();
