@@ -15,9 +15,7 @@ import { Quoter } from "src/Quoter.sol";
 
 uint256 constant INITIAL_MINT_AMOUNT = 100e18;
 uint256 constant DEFAULT_SWAP_FEE_CP = 3000; // 0.3%
-uint256 constant DEFAULT_SWAP_FEE_SP = 100; // 0.01%
 uint256 constant DEFAULT_PLATFORM_FEE = 250_000; // 25%
-uint256 constant DEFAULT_AMP_COEFF = 1000;
 uint256 constant DEFAULT_MAX_CHANGE_RATE = 0.0005e18;
 
 contract SetupScaffold is BaseScript {
@@ -35,13 +33,11 @@ contract SetupScaffold is BaseScript {
     WETH internal _wavax;
 
     // default private key from anvil
-    uint256 private _defaultPrivateKey = 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80;
+    uint256 private _defaultPrivateKey = 0x9b14b816c3f0bf7bd847bccbd621f9bebbb99b9972998a89e1f3d5af1ec247f6;
     address private _walletAddress;
 
     // Bytecode (we want to ensure we grab the exact one, not whatever forge script produces).
     bytes private _constantProductPair = vm.getCode("lib/v3-core/out/ConstantProductPair.sol/ConstantProductPair.json");
-    bytes private _stableMintBurn = vm.getCode("lib/v3-core/out/StableMintBurn.sol/StableMintBurn.json");
-    bytes private _stablePair = vm.getCode("lib/v3-core/out/StablePair.sol/StablePair.json");
 
     function _deployInfra() private {
         vm.startBroadcast(_defaultPrivateKey);
@@ -65,23 +61,12 @@ contract SetupScaffold is BaseScript {
         _factory.addCurve(_constantProductPair);
         _factory.write("CP::swapFee", DEFAULT_SWAP_FEE_CP);
 
-        // add stable curve
-        _factory.addBytecode(_stableMintBurn);
-        _factory.addCurve(_stablePair);
-        _factory.write("SP::swapFee", DEFAULT_SWAP_FEE_SP);
-        _factory.write("SP::amplificationCoefficient", DEFAULT_AMP_COEFF);
-
         ConstantProductPair lPair1 = ConstantProductPair(_factory.createPair(address(_usdt), address(_usdc), 0));
         _usdc.mint(address(lPair1), 1_000_000e6);
         _usdt.mint(address(lPair1), 950_000e6);
         lPair1.mint(address(this));
         require(lPair1.balanceOf(address(this)) > 0, "INSUFFICIENT LIQ");
-        _factory.createPair(address(_usdc), address(_usdt), 1);
-//        _factory.createPair(WAVAX_AVAX_MAINNET, USDC_AVAX_MAINNET, 1);
         vm.stopBroadcast();
-
-        address[] memory lAllPairs = _factory.allPairs();
-        // require(lAllPairs.length == 1, "Wrong number of pairs created");
     }
 
     function _deployPeriphery() private {
