@@ -31,6 +31,7 @@ contract SetupScaffold is BaseScript {
     MintableERC20 internal _usdc;
     MintableERC20 internal _usdt;
     WETH internal _wavax;
+    ConstantProductPair internal _pair1;
 
     // default private key from anvil
     uint256 private _defaultPrivateKey = vm.envUint("PRIVATE_KEY");
@@ -61,11 +62,11 @@ contract SetupScaffold is BaseScript {
         _factory.addCurve(_constantProductPair);
         _factory.write("CP::swapFee", DEFAULT_SWAP_FEE_CP);
 
-        ConstantProductPair lPair1 = ConstantProductPair(_factory.createPair(address(_usdt), address(_usdc), 0));
-        _usdc.mint(address(lPair1), 1_000_000e6);
-        _usdt.mint(address(lPair1), 950_000e6);
-        lPair1.mint(_walletAddress);
-        require(lPair1.balanceOf(_walletAddress) > 0, "INSUFFICIENT LIQ");
+        _pair1 = ConstantProductPair(_factory.createPair(address(_usdt), address(_usdc), 0));
+        _usdc.mint(address(_pair1), 1_000_000e6);
+        _usdt.mint(address(_pair1), 950_000e6);
+        _pair1.mint(_walletAddress);
+        require(_pair1.balanceOf(_walletAddress) > 0, "INSUFFICIENT LIQ");
         vm.stopBroadcast();
     }
 
@@ -110,6 +111,7 @@ contract SetupScaffold is BaseScript {
         // require(_wavax.balanceOf(_walletAddress) == 5_000 ether, "WAVAX AMT WRONG");
         _usdc.approve(address(_router), type(uint256).max);
         _usdt.approve(address(_router), type(uint256).max);
+        _pair1.approve(address(_router), type(uint256).max);
         vm.stopBroadcast();
     }
 
