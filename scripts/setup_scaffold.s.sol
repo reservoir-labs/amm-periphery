@@ -33,7 +33,7 @@ contract SetupScaffold is BaseScript {
     WETH internal _wavax;
 
     // default private key from anvil
-    uint256 private _defaultPrivateKey = 0x9b14b816c3f0bf7bd847bccbd621f9bebbb99b9972998a89e1f3d5af1ec247f6;
+    uint256 private _defaultPrivateKey = vm.envUint("PRIVATE_KEY");
     address private _walletAddress;
 
     // Bytecode (we want to ensure we grab the exact one, not whatever forge script produces).
@@ -64,8 +64,8 @@ contract SetupScaffold is BaseScript {
         ConstantProductPair lPair1 = ConstantProductPair(_factory.createPair(address(_usdt), address(_usdc), 0));
         _usdc.mint(address(lPair1), 1_000_000e6);
         _usdt.mint(address(lPair1), 950_000e6);
-        lPair1.mint(address(this));
-        require(lPair1.balanceOf(address(this)) > 0, "INSUFFICIENT LIQ");
+        lPair1.mint(_walletAddress);
+        require(lPair1.balanceOf(_walletAddress) > 0, "INSUFFICIENT LIQ");
         vm.stopBroadcast();
     }
 

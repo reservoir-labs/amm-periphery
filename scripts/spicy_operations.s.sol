@@ -15,7 +15,7 @@ contract SpicyOperations is BaseScript {
     bytes private _stablePair = vm.getCode("lib/v3-core/out/StablePair.sol/StablePair.json");
 
     // default private key from anvil
-    uint256 private _defaultPrivateKey = 0x9b14b816c3f0bf7bd847bccbd621f9bebbb99b9972998a89e1f3d5af1ec247f6;
+    uint256 private _defaultPrivateKey = vm.envUint("PRIVATE_KEY");
     address private _walletAddress;
 
     function _createStablePair() private {
