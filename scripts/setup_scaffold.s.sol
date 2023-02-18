@@ -5,8 +5,6 @@ import { WETH } from "solmate/tokens/WETH.sol";
 
 import "v3-core/scripts/BaseScript.sol";
 import { ConstantProductPair } from "v3-core/src/curve/constant-product/ConstantProductPair.sol";
-import { StableMintBurn } from "v3-core/src/curve/stable/StableMintBurn.sol";
-import { StablePair } from "v3-core/src/curve/stable/StablePair.sol";
 import { FactoryStoreLib } from "v3-core/src/libraries/FactoryStore.sol";
 import { MintableERC20 } from "v3-core/test/__fixtures/MintableERC20.sol";
 
@@ -21,24 +19,17 @@ uint256 constant DEFAULT_MAX_CHANGE_RATE = 0.0005e18;
 contract SetupScaffold is BaseScript {
     using FactoryStoreLib for GenericFactory;
 
-    address constant public WAVAX_AVAX_MAINNET = 0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7;
-    address constant public USDC_AVAX_MAINNET = 0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E;
-    address constant public USDT_AVAX_MAINNET = 0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7;
-
     ReservoirRouter private _router;
     Quoter private _quoter;
 
     MintableERC20 internal _usdc;
     MintableERC20 internal _usdt;
     WETH internal _wavax;
-    ConstantProductPair internal _pair1;
+    ConstantProductPair internal _cp1;
 
     // default private key from anvil
     uint256 private _defaultPrivateKey = vm.envUint("PRIVATE_KEY");
     address private _walletAddress;
-
-    // Bytecode (we want to ensure we grab the exact one, not whatever forge script produces).
-    bytes private _constantProductPair = vm.getCode("lib/v3-core/out/ConstantProductPair.sol/ConstantProductPair.json");
 
     function _deployInfra() private {
         vm.startBroadcast(_defaultPrivateKey);
@@ -59,14 +50,14 @@ contract SetupScaffold is BaseScript {
         _factory.write("Shared::maxChangeRate", DEFAULT_MAX_CHANGE_RATE);
 
         // add constant product curve
-        _factory.addCurve(_constantProductPair);
+        _factory.addCurve(type(ConstantProductPair).creationCode);
         _factory.write("CP::swapFee", DEFAULT_SWAP_FEE_CP);
 
-        _pair1 = ConstantProductPair(_factory.createPair(address(_usdt), address(_usdc), 0));
-        _usdc.mint(address(_pair1), 1_000_000e6);
-        _usdt.mint(address(_pair1), 950_000e6);
-        _pair1.mint(_walletAddress);
-        require(_pair1.balanceOf(_walletAddress) > 0, "INSUFFICIENT LIQ");
+        _cp1 = ConstantProductPair(_factory.createPair(address(_usdt), address(_usdc), 0));
+        _usdc.mint(address(_cp1), 1_000_000e6);
+        _usdt.mint(address(_cp1), 950_000e6);
+        _cp1.mint(_walletAddress);
+        require(_cp1.balanceOf(_walletAddress) > 0, "INSUFFICIENT LIQ");
         vm.stopBroadcast();
     }
 
@@ -111,7 +102,7 @@ contract SetupScaffold is BaseScript {
         // require(_wavax.balanceOf(_walletAddress) == 5_000 ether, "WAVAX AMT WRONG");
         _usdc.approve(address(_router), type(uint256).max);
         _usdt.approve(address(_router), type(uint256).max);
-        _pair1.approve(address(_router), type(uint256).max);
+        _cp1.approve(address(_router), type(uint256).max);
         vm.stopBroadcast();
     }
 
