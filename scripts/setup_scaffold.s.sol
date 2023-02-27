@@ -26,6 +26,7 @@ contract SetupScaffold is BaseScript {
     MintableERC20 internal _usdt;
     WETH internal _wavax;
     ConstantProductPair internal _cp1;
+    ConstantProductPair internal _cp2;
 
     // default private key from anvil
     uint256 private _defaultPrivateKey = vm.envUint("PRIVATE_KEY");
@@ -53,11 +54,6 @@ contract SetupScaffold is BaseScript {
         _factory.addCurve(type(ConstantProductPair).creationCode);
         _factory.write("CP::swapFee", DEFAULT_SWAP_FEE_CP);
 
-        _cp1 = ConstantProductPair(_factory.createPair(address(_usdt), address(_usdc), 0));
-        _usdc.mint(address(_cp1), 1_000_000e6);
-        _usdt.mint(address(_cp1), 950_000e6);
-        _cp1.mint(_walletAddress);
-        require(_cp1.balanceOf(_walletAddress) > 0, "INSUFFICIENT LIQ");
         vm.stopBroadcast();
     }
 
@@ -94,15 +90,40 @@ contract SetupScaffold is BaseScript {
         }
     }
 
-    function _getRichAndApproveRouter() private {
+    function _getRich() private {
+        uint256 lAmtToWrap = 1 ether;
         vm.startBroadcast(_defaultPrivateKey);
         _usdc.mint(_walletAddress, 1_000_000e6);
         _usdt.mint(_walletAddress, 1_000_000e6);
-        // _wavax.deposit{value: 5_000 ether}();
-        // require(_wavax.balanceOf(_walletAddress) == 5_000 ether, "WAVAX AMT WRONG");
+        _wavax.deposit{value: lAmtToWrap}();
+        require(_wavax.balanceOf(_walletAddress) == lAmtToWrap, "WAVAX AMT WRONG");
+        vm.stopBroadcast();
+    }
+
+    function _deployPairs() private {
+        vm.startBroadcast(_defaultPrivateKey);
+        _cp1 = ConstantProductPair(_factory.createPair(address(_usdt), address(_usdc), 0));
+        _usdc.mint(address(_cp1), 1_000_000e6);
+        _usdt.mint(address(_cp1), 950_000e6);
+        _cp1.mint(_walletAddress);
+
+        _cp2 = ConstantProductPair(_factory.createPair(address(_wavax), address(_usdc), 0));
+        _usdc.mint(address(_cp2), 103_392_049_192);
+        _wavax.transfer(address(_cp2), 302_291_291_321_201_392);
+        _cp2.mint(_walletAddress);
+
+        require(_cp1.balanceOf(_walletAddress) > 0, "INSUFFICIENT LIQ");
+        require(_cp2.balanceOf(_walletAddress) > 0, "INSUFFICIENT LIQ");
+        vm.stopBroadcast();
+    }
+
+    function _approveRouter() private {
+        vm.startBroadcast(_defaultPrivateKey);
         _usdc.approve(address(_router), type(uint256).max);
         _usdt.approve(address(_router), type(uint256).max);
+        _wavax.approve(address(_router), type(uint256).max);
         _cp1.approve(address(_router), type(uint256).max);
+        _cp2.approve(address(_router), type(uint256).max);
         vm.stopBroadcast();
     }
 
@@ -111,6 +132,8 @@ contract SetupScaffold is BaseScript {
         _deployInfra();
         _deployCore();
         _deployPeriphery();
-        _getRichAndApproveRouter();
+        _getRich();
+        _deployPairs();
+        _approveRouter();
     }
 }
