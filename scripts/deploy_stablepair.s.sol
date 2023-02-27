@@ -21,6 +21,7 @@ contract DeployStablePair is BaseScript {
 
     address private _deployedUSDC = 0x2B0d36FACD61B71CC05ab8F3D2355ec3631C0dd5;
     address private _deployedUSDT = 0xfbC22278A96299D91d41C453234d97b4F5Eb9B2d;
+    address private _router       = 0xdf838f41f3e0D5C0d56112D7d22e5466526C0baa;
 
     StablePair internal _sp1;
 
@@ -41,11 +42,14 @@ contract DeployStablePair is BaseScript {
         _sp1.mint(_walletAddress);
         require(_sp1.balanceOf(_walletAddress) > 0, "INSUFFICIENT LIQ");
 
+        _sp1.approve(_router, type(uint256).max);
+
         // _factory.createPair(WAVAX_AVAX_MAINNET, USDC_AVAX_MAINNET, 1);
         vm.stopBroadcast();
     }
 
     function run() external {
+        _walletAddress = vm.rememberKey(_defaultPrivateKey);
         _setup(_defaultPrivateKey);
         _createStablePair();
     }
