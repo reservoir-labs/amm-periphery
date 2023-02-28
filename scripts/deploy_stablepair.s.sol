@@ -21,7 +21,7 @@ contract DeployStablePair is BaseScript {
 
     address private _deployedUSDC = 0x2B0d36FACD61B71CC05ab8F3D2355ec3631C0dd5;
     address private _deployedUSDT = 0xfbC22278A96299D91d41C453234d97b4F5Eb9B2d;
-    address private _router       = 0xdf838f41f3e0D5C0d56112D7d22e5466526C0baa;
+    address private _router       = 0x7925565bB6a3e6094dC16740b3ac65BC3A53d3Ec;
 
     StablePair internal _sp1;
 

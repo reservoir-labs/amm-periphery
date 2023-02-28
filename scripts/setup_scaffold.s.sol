@@ -19,12 +19,14 @@ uint256 constant DEFAULT_MAX_CHANGE_RATE = 0.0005e18;
 contract SetupScaffold is BaseScript {
     using FactoryStoreLib for GenericFactory;
 
+    address payable private constant AVAX_MAINNET_WAVAX = payable(0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7);
+
     ReservoirRouter private _router;
     Quoter private _quoter;
 
     MintableERC20 internal _usdc;
     MintableERC20 internal _usdt;
-    WETH internal _wavax;
+    WETH internal _wavax = WETH(AVAX_MAINNET_WAVAX);
     ConstantProductPair internal _cp1;
     ConstantProductPair internal _cp2;
 
@@ -36,7 +38,7 @@ contract SetupScaffold is BaseScript {
         vm.startBroadcast(_defaultPrivateKey);
         _usdc = new MintableERC20("USD Circle", "USDC", 6);
         _usdt = new MintableERC20("USD Tether", "USDT", 6);
-        _wavax = new WETH();
+        // _wavax = new WETH();
         vm.stopBroadcast();
     }
 
