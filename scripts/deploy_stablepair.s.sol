@@ -19,9 +19,9 @@ contract DeployStablePair is BaseScript {
     uint256 private _defaultPrivateKey = vm.envUint("PRIVATE_KEY");
     address private _walletAddress;
 
-    address private _deployedUSDC = 0x2B0d36FACD61B71CC05ab8F3D2355ec3631C0dd5;
-    address private _deployedUSDT = 0xfbC22278A96299D91d41C453234d97b4F5Eb9B2d;
-    address private _router       = 0x7925565bB6a3e6094dC16740b3ac65BC3A53d3Ec;
+    address private _deployedUSDC = 0x5D60473C5Cb323032d6fdFf42380B50E2AE4d245;
+    address private _deployedUSDT = 0x6e9FDaE1Fe20b0A5a605C879Ae14030a0aE99cF9;
+    address private _router       = 0x7F05c63dC7CA3F99f2d3409f0017C28058C42B27;
 
     StablePair internal _sp1;
 
