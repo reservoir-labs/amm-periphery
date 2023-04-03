@@ -321,6 +321,12 @@ contract ReservoirRouterTest is BaseTest {
         );
     }
 
+    function testRemoveLiquidity_PairDoesNotExist() external {
+        // act & assert
+        vm.expectRevert();
+        _router.removeLiquidity(address(0), address(0), 1, 123, 0, 0, address(this));
+    }
+
     function testCheckDeadline(uint256 aDeadline) public {
         // assume
         uint256 lDeadline = bound(aDeadline, 1, type(uint64).max);

@@ -37,6 +37,15 @@ To run unit tests:
 forge test
 ```
 
+## Deploying
+
+To deploy this onto a testnet / mainnet, run:
+
+```bash
+forge script scripts/setup_scaffold.s.sol --target-contract SetupScaffold 
+--sig "run()" --rpc-url "http://127.0.0.1:8545"  -vv
+```
+
 ## Contributing
 
 Are you interested in helping us build the future of Vexchange with our V3?
