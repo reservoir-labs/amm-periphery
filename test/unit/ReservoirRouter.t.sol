@@ -24,8 +24,8 @@ contract ReservoirRouterTest is BaseTest {
 
     function testAddLiquidity_CP(uint256 aTokenAMintAmt, uint256 aTokenBMintAmt) public {
         // assume
-        uint256 lTokenAMintAmt = bound(aTokenAMintAmt, 1, type(uint104).max - INITIAL_MINT_AMOUNT);
-        uint256 lTokenBMintAmt = bound(aTokenBMintAmt, 1, type(uint104).max - INITIAL_MINT_AMOUNT);
+        uint256 lTokenAMintAmt = bound(aTokenAMintAmt, 1, type(uint104).max - ConstantsLib.INITIAL_MINT_AMOUNT);
+        uint256 lTokenBMintAmt = bound(aTokenBMintAmt, 1, type(uint104).max - ConstantsLib.INITIAL_MINT_AMOUNT);
 
         // arrange
         _tokenA.mint(_bob, lTokenAMintAmt);
@@ -53,8 +53,8 @@ contract ReservoirRouterTest is BaseTest {
         assertEq(lPair.balanceOf(_bob), lLiquidity);
         assertEq(_tokenA.balanceOf(_bob), lTokenAMintAmt - lAmountA);
         assertEq(_tokenB.balanceOf(_bob), lTokenBMintAmt - lAmountB);
-        assertEq(_tokenA.balanceOf(address(lPair)), INITIAL_MINT_AMOUNT + lAmountA);
-        assertEq(_tokenB.balanceOf(address(lPair)), INITIAL_MINT_AMOUNT + lAmountB);
+        assertEq(_tokenA.balanceOf(address(lPair)), ConstantsLib.INITIAL_MINT_AMOUNT + lAmountA);
+        assertEq(_tokenB.balanceOf(address(lPair)), ConstantsLib.INITIAL_MINT_AMOUNT + lAmountB);
     }
 
     function testAddLiquidity_CreatePair_CP() public {
@@ -120,8 +120,8 @@ contract ReservoirRouterTest is BaseTest {
 
     function testAddLiquidity_SP_Balanced(uint256 aTokenAMintAmt, uint256 aTokenBMintAmt) public {
         // assume
-        uint256 lTokenAMintAmt = bound(aTokenAMintAmt, 1, type(uint104).max - INITIAL_MINT_AMOUNT);
-        uint256 lTokenBMintAmt = bound(aTokenBMintAmt, 1, type(uint104).max - INITIAL_MINT_AMOUNT);
+        uint256 lTokenAMintAmt = bound(aTokenAMintAmt, 1, type(uint104).max - ConstantsLib.INITIAL_MINT_AMOUNT);
+        uint256 lTokenBMintAmt = bound(aTokenBMintAmt, 1, type(uint104).max - ConstantsLib.INITIAL_MINT_AMOUNT);
 
         // arrange
         _tokenA.mint(_bob, lTokenAMintAmt);
@@ -148,8 +148,8 @@ contract ReservoirRouterTest is BaseTest {
         assertEq(lPair.balanceOf(_bob), lLiquidity);
         assertEq(_tokenA.balanceOf(_bob), lTokenAMintAmt - lAmountA);
         assertEq(_tokenB.balanceOf(_bob), lTokenBMintAmt - lAmountB);
-        assertEq(_tokenA.balanceOf(address(lPair)), INITIAL_MINT_AMOUNT + lAmountA);
-        assertEq(_tokenB.balanceOf(address(lPair)), INITIAL_MINT_AMOUNT + lAmountB);
+        assertEq(_tokenA.balanceOf(address(lPair)), ConstantsLib.INITIAL_MINT_AMOUNT + lAmountA);
+        assertEq(_tokenB.balanceOf(address(lPair)), ConstantsLib.INITIAL_MINT_AMOUNT + lAmountB);
         assertEq(lLiquidity, lAmountA + lAmountB);
     }
 
@@ -527,8 +527,8 @@ contract ReservoirRouterTest is BaseTest {
     function testSwapVariableForExact(uint256 aAmtOut) public {
         // arrange;
         StablePair lOtherPair = StablePair(_createPair(address(_tokenB), address(_tokenC), 1));
-        _tokenB.mint(address(lOtherPair), INITIAL_MINT_AMOUNT);
-        _tokenC.mint(address(lOtherPair), INITIAL_MINT_AMOUNT);
+        _tokenB.mint(address(lOtherPair), ConstantsLib.INITIAL_MINT_AMOUNT);
+        _tokenC.mint(address(lOtherPair), ConstantsLib.INITIAL_MINT_AMOUNT);
         lOtherPair.mint(address(this));
 
         address[] memory lPath = new address[](3);
@@ -539,7 +539,7 @@ contract ReservoirRouterTest is BaseTest {
         lCurveIds[0] = 1;
         lCurveIds[1] = 1;
 
-        uint256 lAmtOut = bound(aAmtOut, 1e3, INITIAL_MINT_AMOUNT / 2);
+        uint256 lAmtOut = bound(aAmtOut, 1e3, ConstantsLib.INITIAL_MINT_AMOUNT / 2);
 
         uint256[] memory lAmounts = ReservoirLibrary.getAmountsIn(address(_factory), lAmtOut, lPath, lCurveIds);
 
