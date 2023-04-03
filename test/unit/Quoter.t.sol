@@ -16,7 +16,11 @@ contract QuoterTest is BaseTest {
     using FixedPointMathLib for uint256;
 
     WETH private _weth = new WETH();
-    Quoter private _quoter = new Quoter(address(_factory), address(_weth));
+    Quoter private _quoter;
+
+    function setUp() public {
+        _quoter = new Quoter(address(_factory), address(_weth));
+    }
 
     function testQuoteAddLiquidity_PairDoesNotExistYet(uint256 aAmountBToAdd, uint256 aAmountCToAdd, uint256 aCurveId)
         public

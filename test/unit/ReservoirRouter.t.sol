@@ -15,12 +15,16 @@ contract ReservoirRouterTest is BaseTest {
     using FixedPointMathLib for uint256;
 
     WETH private _weth = new WETH();
-    ReservoirRouter private _router = new ReservoirRouter(address(_factory), address(_weth));
+    ReservoirRouter private _router;
 
     bytes[] private _data;
 
     // required to receive ETH refunds from the router
     receive() external payable { } // solhint-disable-line no-empty-blocks
+
+    function setUp() public {
+        _router = new ReservoirRouter(address(_factory), address(_weth));
+    }
 
     function testAddLiquidity_CP(uint256 aTokenAMintAmt, uint256 aTokenBMintAmt) public {
         // assume
