@@ -16,7 +16,11 @@ contract QuoterTest is BaseTest {
     using FixedPointMathLib for uint256;
 
     WETH private _weth = new WETH();
-    Quoter private _quoter = new Quoter(address(_factory), address(_weth));
+    Quoter private _quoter;
+
+    function setUp() public {
+        _quoter = new Quoter(address(_factory), address(_weth));
+    }
 
     function testQuoteAddLiquidity_PairDoesNotExistYet(uint256 aAmountBToAdd, uint256 aAmountCToAdd, uint256 aCurveId)
         public
@@ -37,7 +41,7 @@ contract QuoterTest is BaseTest {
             assertEq(lLiq, FixedPointMathLib.sqrt(lAmountBToAdd * lAmountCToAdd) - _quoter.MINIMUM_LIQUIDITY());
         } else if (lCurveId == 1) {
             uint256 lExpectedStableLiq = ReservoirLibrary.computeStableLiquidity(
-                lAmountBToAdd, lAmountCToAdd, 1, 1, 2 * DEFAULT_AMP_COEFF * StableMath.A_PRECISION
+                lAmountBToAdd, lAmountCToAdd, 1, 1, 2 * ConstantsLib.DEFAULT_AMP_COEFF * StableMath.A_PRECISION
             );
             assertEq(lLiq, lExpectedStableLiq - _quoter.MINIMUM_LIQUIDITY());
         }
@@ -45,8 +49,8 @@ contract QuoterTest is BaseTest {
 
     function testQuoteAddLiquidity_ConstantProduct_Balanced(uint256 aAmountAToAdd, uint256 aAmountBToAdd) public {
         // assume
-        uint256 lAmountAToAdd = bound(aAmountAToAdd, 1000, type(uint104).max - INITIAL_MINT_AMOUNT);
-        uint256 lAmountBToAdd = bound(aAmountBToAdd, 1000, type(uint104).max - INITIAL_MINT_AMOUNT);
+        uint256 lAmountAToAdd = bound(aAmountAToAdd, 1000, type(uint104).max - ConstantsLib.INITIAL_MINT_AMOUNT);
+        uint256 lAmountBToAdd = bound(aAmountBToAdd, 1000, type(uint104).max - ConstantsLib.INITIAL_MINT_AMOUNT);
 
         // act
         (uint256 lAmountAOptimal, uint256 lAmountBOptimal, uint256 lLiq) =
@@ -107,8 +111,8 @@ contract QuoterTest is BaseTest {
 
     function testQuoteAddLiquidity_Stable_Balanced(uint256 aAmountAToAdd, uint256 aAmountBToAdd) public {
         // assume
-        uint256 lAmountAToAdd = bound(aAmountAToAdd, 1000, type(uint104).max - INITIAL_MINT_AMOUNT);
-        uint256 lAmountBToAdd = bound(aAmountBToAdd, 1000, type(uint104).max - INITIAL_MINT_AMOUNT);
+        uint256 lAmountAToAdd = bound(aAmountAToAdd, 1000, type(uint104).max - ConstantsLib.INITIAL_MINT_AMOUNT);
+        uint256 lAmountBToAdd = bound(aAmountBToAdd, 1000, type(uint104).max - ConstantsLib.INITIAL_MINT_AMOUNT);
 
         // act
         (uint256 lAmountAOptimal, uint256 lAmountBOptimal, uint256 lLiq) =
@@ -256,12 +260,12 @@ contract QuoterTest is BaseTest {
 
     function testGetAmountsIn(uint256 aAmtOut) public {
         // assume
-        uint256 lAmtOut = bound(aAmtOut, 1, INITIAL_MINT_AMOUNT / 3);
+        uint256 lAmtOut = bound(aAmtOut, 1, ConstantsLib.INITIAL_MINT_AMOUNT / 3);
 
         // arrange
         ConstantProductPair lNewPair = ConstantProductPair(_createPair(address(_tokenB), address(_tokenD), 0));
-        _tokenB.mint(address(lNewPair), INITIAL_MINT_AMOUNT);
-        _tokenD.mint(address(lNewPair), INITIAL_MINT_AMOUNT);
+        _tokenB.mint(address(lNewPair), ConstantsLib.INITIAL_MINT_AMOUNT);
+        _tokenD.mint(address(lNewPair), ConstantsLib.INITIAL_MINT_AMOUNT);
         lNewPair.mint(address(this));
         address[] memory lPath = new address[](3);
         lPath[0] = address(_tokenA);

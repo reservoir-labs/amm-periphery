@@ -1,14 +1,14 @@
 [profile.default]
-solc           = "0.8.17"
+solc           = "0.8.19"
 bytecode_hash  = "none"
 optimizer_runs = 1_000_000
 remappings     = ["@openzeppelin/=lib/openzeppelin-contracts/contracts/", "v3-core/=lib/v3-core"]
 match_path     = "test/unit/*.sol"
 verbosity      = 3
-
+ignored_error_codes = []
 fs_permissions = [
-    { access = "write", path = "./scripts/optimized-stable-mint-burn-key" },
-    { access = "write", path = "./scripts/unoptimized-stable-mint-burn-key" },
+    { access = "write", path = "./scripts/optimized-deployer-meta" },
+    { access = "write", path = "./scripts/unoptimized-deployer-meta" },
     { access = "read", path = "./out" },
     { access = "read", path = "./lib" },
 ]
