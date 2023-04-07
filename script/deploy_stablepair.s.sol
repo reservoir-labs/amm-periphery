@@ -17,8 +17,8 @@ contract DeployStablePair is BaseScript {
     using FactoryStoreLib for GenericFactory;
 
     // default private key from anvil
-    uint256 private _defaultPrivateKey = vm.envUint("PRIVATE_KEY");
-    address private _walletAddress;
+    uint256 private _defaultPrivateKey = vm.envUint("TEST_PRIVATE_KEY");
+    address private _walletAddress = vm.rememberKey(_defaultPrivateKey);
 
     GenericFactory private _factory;
     address private _deployedUSDC = 0x5D60473C5Cb323032d6fdFf42380B50E2AE4d245;
@@ -46,7 +46,6 @@ contract DeployStablePair is BaseScript {
     }
 
     function run() external {
-        _walletAddress = vm.rememberKey(_defaultPrivateKey);
         _ensureDeployerExists(_defaultPrivateKey);
         _setFactoryAddress();
         _createStablePair();
