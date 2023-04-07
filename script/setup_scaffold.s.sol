@@ -36,8 +36,8 @@ contract SetupScaffold is BaseScript {
     ConstantProductPair internal _cp2;
 
     // default private key from anvil
-    uint256 private _defaultPrivateKey = vm.envUint("PRIVATE_KEY");
-    address private _walletAddress;
+    uint256 private _defaultPrivateKey = vm.envUint("TEST_PRIVATE_KEY");
+    address private _walletAddress = vm.rememberKey(_defaultPrivateKey);
 
     function _deployInfra() private {
         vm.startBroadcast(_defaultPrivateKey);
@@ -51,9 +51,9 @@ contract SetupScaffold is BaseScript {
         _ensureDeployerExists(_defaultPrivateKey);
 
         vm.startBroadcast(_defaultPrivateKey);
-        _factory = GenericFactory(address(_deployer.deployFactory(type(GenericFactory).creationCode)));
-        _deployer.deployConstantProduct(type(ConstantProductPair).creationCode);
-        _deployer.deployStable(type(StablePair).creationCode);
+        _factory = GenericFactory(address(_deployer.deployFactory{gas: 8000000}(type(GenericFactory).creationCode)));
+        _deployer.deployConstantProduct{gas: 8000000}(type(ConstantProductPair).creationCode);
+        _deployer.deployStable{gas: 8000000}(type(StablePair).creationCode);
         _oracleCaller = OracleCaller(address(_deployer.deployOracleCaller(type(OracleCaller).creationCode)));
 
         _deployer.proposeOwner(msg.sender);
@@ -134,7 +134,6 @@ contract SetupScaffold is BaseScript {
     }
 
     function run() external {
-        _walletAddress = vm.rememberKey(_defaultPrivateKey);
         _deployInfra();
         _deployCore();
         _deployPeriphery();
