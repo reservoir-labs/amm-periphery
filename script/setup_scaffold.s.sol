@@ -14,11 +14,6 @@ import { MintableERC20 } from "v3-core/test/__fixtures/MintableERC20.sol";
 import { ReservoirRouter } from "src/ReservoirRouter.sol";
 import { Quoter } from "src/Quoter.sol";
 
-uint256 constant INITIAL_MINT_AMOUNT = 100e18;
-uint256 constant DEFAULT_SWAP_FEE_CP = 3000; // 0.3%
-uint256 constant DEFAULT_PLATFORM_FEE = 250_000; // 25%
-uint256 constant DEFAULT_MAX_CHANGE_RATE = 0.0005e18;
-
 contract SetupScaffold is BaseScript {
     using FactoryStoreLib for GenericFactory;
 
