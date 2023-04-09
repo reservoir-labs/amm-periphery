@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
-import "v3-core/scripts/BaseScript.sol";
+import "amm-core/scripts/BaseScript.sol";
 
-import { GenericFactory } from "v3-core/src/GenericFactory.sol";
-import { FactoryStoreLib } from "v3-core/src/libraries/FactoryStore.sol";
-import { ConstantsLib } from "v3-core/src/libraries/Constants.sol";
-import { StablePair } from "v3-core/src/curve/stable/StablePair.sol";
-import { StableMintBurn } from "v3-core/src/curve/stable/StableMintBurn.sol";
-import { MintableERC20 } from "v3-core/test/__fixtures/MintableERC20.sol";
+import { GenericFactory } from "amm-core/src/GenericFactory.sol";
+import { FactoryStoreLib } from "amm-core/src/libraries/FactoryStore.sol";
+import { ConstantsLib } from "amm-core/src/libraries/Constants.sol";
+import { StablePair } from "amm-core/src/curve/stable/StablePair.sol";
+import { StableMintBurn } from "amm-core/src/curve/stable/StableMintBurn.sol";
+import { MintableERC20 } from "amm-core/test/__fixtures/MintableERC20.sol";
 
 uint256 constant DEFAULT_SWAP_FEE_SP = 100; // 0.01%
 uint256 constant DEFAULT_AMP_COEFF = 1000;

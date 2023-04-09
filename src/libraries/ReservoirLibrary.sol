@@ -2,14 +2,14 @@ pragma solidity ^0.8.0;
 
 import { ERC20 } from "solmate/tokens/ERC20.sol";
 
-import { ReservoirPair } from "v3-core/src/ReservoirPair.sol";
-import { IGenericFactory } from "v3-core/src/interfaces/IGenericFactory.sol";
+import { ReservoirPair } from "amm-core/src/ReservoirPair.sol";
+import { IGenericFactory } from "amm-core/src/interfaces/IGenericFactory.sol";
 import { ExtraData } from "src/interfaces/IQuoter.sol";
 
-import { ConstantProductPair } from "v3-core/src/curve/constant-product/ConstantProductPair.sol";
-import { StablePair } from "v3-core/src/curve/stable/StablePair.sol";
+import { ConstantProductPair } from "amm-core/src/curve/constant-product/ConstantProductPair.sol";
+import { StablePair } from "amm-core/src/curve/stable/StablePair.sol";
 
-import { StableMath } from "v3-core/src/libraries/StableMath.sol";
+import { StableMath } from "amm-core/src/libraries/StableMath.sol";
 
 library ReservoirLibrary {
     uint256 public constant FEE_ACCURACY = 1_000_000;

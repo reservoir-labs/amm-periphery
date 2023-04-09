@@ -1,13 +1,13 @@
 pragma solidity ^0.8.0;
 
-import "v3-core/test/__fixtures/BaseTest.sol";
+import "amm-core/test/__fixtures/BaseTest.sol";
 
 import { WETH } from "solmate/tokens/WETH.sol";
 import { Math } from "@openzeppelin/utils/math/Math.sol";
 import { FixedPointMathLib } from "solmate/utils/FixedPointMathLib.sol";
 
-import { MathUtils } from "v3-core/src/libraries/MathUtils.sol";
-import { StableMath } from "v3-core/src/libraries/StableMath.sol";
+import { MathUtils } from "amm-core/src/libraries/MathUtils.sol";
+import { StableMath } from "amm-core/src/libraries/StableMath.sol";
 
 import { Quoter, ExtraData } from "src/Quoter.sol";
 import { ReservoirLibrary } from "src/libraries/ReservoirLibrary.sol";
