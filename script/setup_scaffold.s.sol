@@ -4,23 +4,23 @@ pragma solidity ^0.8.0;
 import { WETH } from "solmate/tokens/WETH.sol";
 
 import "v3-core/scripts/BaseScript.sol";
+import { GenericFactory } from "v3-core/src/GenericFactory.sol";
 import { ConstantProductPair } from "v3-core/src/curve/constant-product/ConstantProductPair.sol";
+import { StablePair } from "v3-core/src/curve/stable/StablePair.sol";
+import { OracleCaller } from "v3-core/src/oracle/OracleCaller.sol";
 import { FactoryStoreLib } from "v3-core/src/libraries/FactoryStore.sol";
 import { MintableERC20 } from "v3-core/test/__fixtures/MintableERC20.sol";
 
 import { ReservoirRouter } from "src/ReservoirRouter.sol";
 import { Quoter } from "src/Quoter.sol";
 
-uint256 constant INITIAL_MINT_AMOUNT = 100e18;
-uint256 constant DEFAULT_SWAP_FEE_CP = 3000; // 0.3%
-uint256 constant DEFAULT_PLATFORM_FEE = 250_000; // 25%
-uint256 constant DEFAULT_MAX_CHANGE_RATE = 0.0005e18;
-
 contract SetupScaffold is BaseScript {
     using FactoryStoreLib for GenericFactory;
 
     address payable private constant AVAX_MAINNET_WAVAX = payable(0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7);
 
+    GenericFactory private _factory;
+    OracleCaller private _oracleCaller;
     ReservoirRouter private _router;
     Quoter private _quoter;
 
@@ -31,8 +31,8 @@ contract SetupScaffold is BaseScript {
     ConstantProductPair internal _cp2;
 
     // default private key from anvil
-    uint256 private _defaultPrivateKey = vm.envUint("PRIVATE_KEY");
-    address private _walletAddress;
+    uint256 private _defaultPrivateKey = vm.envUint("TEST_PRIVATE_KEY");
+    address private _walletAddress = vm.rememberKey(_defaultPrivateKey);
 
     function _deployInfra() private {
         vm.startBroadcast(_defaultPrivateKey);
@@ -43,19 +43,18 @@ contract SetupScaffold is BaseScript {
     }
 
     function _deployCore() private {
-        _setup(_defaultPrivateKey);
+        _ensureDeployerExists(_defaultPrivateKey);
 
         vm.startBroadcast(_defaultPrivateKey);
-        // set shared variables
-        _factory.write("Shared::platformFee", DEFAULT_PLATFORM_FEE);
-        // _factory.write("Shared::platformFeeTo", _platformFeeTo);
-        // _factory.write("Shared::defaultRecoverer", _recoverer);
-        _factory.write("Shared::maxChangeRate", DEFAULT_MAX_CHANGE_RATE);
+        _factory = GenericFactory(address(_deployer.deployFactory{gas: 8000000}(type(GenericFactory).creationCode)));
+        _deployer.deployConstantProduct{gas: 8000000}(type(ConstantProductPair).creationCode);
+        _deployer.deployStable{gas: 8000000}(type(StablePair).creationCode);
+        _oracleCaller = OracleCaller(address(_deployer.deployOracleCaller(type(OracleCaller).creationCode)));
 
-        // add constant product curve
-        _factory.addCurve(type(ConstantProductPair).creationCode);
-        _factory.write("CP::swapFee", DEFAULT_SWAP_FEE_CP);
-
+        _deployer.proposeOwner(msg.sender);
+        _deployer.claimOwnership();
+        _deployer.claimFactory();
+        _deployer.claimOracleCaller();
         vm.stopBroadcast();
     }
 
@@ -130,7 +129,6 @@ contract SetupScaffold is BaseScript {
     }
 
     function run() external {
-        _walletAddress = vm.rememberKey(_defaultPrivateKey);
         _deployInfra();
         _deployCore();
         _deployPeriphery();
