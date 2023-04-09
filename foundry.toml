@@ -2,7 +2,7 @@
 solc           = "0.8.19"
 bytecode_hash  = "none"
 optimizer_runs = 1_000_000
-remappings     = ["@openzeppelin/=lib/openzeppelin-contracts/contracts/", "v3-core/=lib/v3-core"]
+remappings     = ["@openzeppelin/=lib/openzeppelin-contracts/contracts/", "amm-core/=lib/amm-core"]
 match_path     = "test/unit/*.sol"
 verbosity      = 3
 ignored_error_codes = []

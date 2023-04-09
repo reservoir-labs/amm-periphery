@@ -3,13 +3,13 @@ pragma solidity ^0.8.0;
 
 import { WETH } from "solmate/tokens/WETH.sol";
 
-import "v3-core/scripts/BaseScript.sol";
-import { GenericFactory } from "v3-core/src/GenericFactory.sol";
-import { ConstantProductPair } from "v3-core/src/curve/constant-product/ConstantProductPair.sol";
-import { StablePair } from "v3-core/src/curve/stable/StablePair.sol";
-import { OracleCaller } from "v3-core/src/oracle/OracleCaller.sol";
-import { FactoryStoreLib } from "v3-core/src/libraries/FactoryStore.sol";
-import { MintableERC20 } from "v3-core/test/__fixtures/MintableERC20.sol";
+import "amm-core/scripts/BaseScript.sol";
+import { GenericFactory } from "amm-core/src/GenericFactory.sol";
+import { ConstantProductPair } from "amm-core/src/curve/constant-product/ConstantProductPair.sol";
+import { StablePair } from "amm-core/src/curve/stable/StablePair.sol";
+import { OracleCaller } from "amm-core/src/oracle/OracleCaller.sol";
+import { FactoryStoreLib } from "amm-core/src/libraries/FactoryStore.sol";
+import { MintableERC20 } from "amm-core/test/__fixtures/MintableERC20.sol";
 
 import { ReservoirRouter } from "src/ReservoirRouter.sol";
 import { Quoter } from "src/Quoter.sol";

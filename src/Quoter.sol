@@ -3,12 +3,12 @@ pragma solidity ^0.8.0;
 import { FixedPointMathLib } from "solmate/utils/FixedPointMathLib.sol";
 import { Math } from "@openzeppelin/utils/math/Math.sol";
 
-import { ReservoirPair } from "v3-core/src/ReservoirPair.sol";
-import { StablePair } from "v3-core/src/curve/stable/StablePair.sol";
-import { Bytes32Lib } from "v3-core/src/libraries/Bytes32.sol";
-import { FactoryStoreLib } from "v3-core/src/libraries/FactoryStore.sol";
-import { GenericFactory } from "v3-core/src/GenericFactory.sol";
-import { StableMath } from "v3-core/src/libraries/StableMath.sol";
+import { ReservoirPair } from "amm-core/src/ReservoirPair.sol";
+import { StablePair } from "amm-core/src/curve/stable/StablePair.sol";
+import { Bytes32Lib } from "amm-core/src/libraries/Bytes32.sol";
+import { FactoryStoreLib } from "amm-core/src/libraries/FactoryStore.sol";
+import { GenericFactory } from "amm-core/src/GenericFactory.sol";
+import { StableMath } from "amm-core/src/libraries/StableMath.sol";
 
 import { IQuoter, ExtraData } from "src/interfaces/IQuoter.sol";
 
