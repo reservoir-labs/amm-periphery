@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.0;
 
 import { IReservoirRouter } from "src/interfaces/IReservoirRouter.sol";
@@ -8,7 +9,6 @@ import { TransferHelper } from "src/libraries/TransferHelper.sol";
 
 import { PeripheryImmutableState } from "src/abstract/PeripheryImmutableState.sol";
 import { PeripheryPayments } from "src/abstract/PeripheryPayments.sol";
-import { PredicateHelper } from "src/abstract/PredicateHelper.sol";
 import { Multicall } from "src/abstract/Multicall.sol";
 import { SelfPermit } from "src/abstract/SelfPermit.sol";
 
@@ -16,7 +16,6 @@ contract ReservoirRouter is
     IReservoirRouter,
     PeripheryImmutableState,
     PeripheryPayments,
-    PredicateHelper,
     Multicall,
     SelfPermit
 {
