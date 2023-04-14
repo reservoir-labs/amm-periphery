@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
-import "amm-core/scripts/BaseScript.sol";
+import "amm-core/script/BaseScript.sol";
 
 import { GenericFactory } from "amm-core/src/GenericFactory.sol";
 import { FactoryStoreLib } from "amm-core/src/libraries/FactoryStore.sol";

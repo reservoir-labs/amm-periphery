@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import { WETH } from "solmate/tokens/WETH.sol";
 
-import "amm-core/scripts/BaseScript.sol";
+import "amm-core/script/BaseScript.sol";
 import { GenericFactory } from "amm-core/src/GenericFactory.sol";
 import { ConstantProductPair } from "amm-core/src/curve/constant-product/ConstantProductPair.sol";
 import { StablePair } from "amm-core/src/curve/stable/StablePair.sol";
