@@ -103,7 +103,7 @@ contract ReservoirLibraryTest is BaseTest {
 
     function testGetAmountOutConstantProduct(uint256 aAmountIn) public {
         // assume
-        uint256 lAmountIn = bound(aAmountIn, 1, type(uint104).max - ConstantsLib.INITIAL_MINT_AMOUNT);
+        uint256 lAmountIn = bound(aAmountIn, 1, type(uint104).max - Constants.INITIAL_MINT_AMOUNT);
 
         // arrange
         (uint104 lReserve0, uint104 lReserve1,,) = _constantProductPair.getReserves();
@@ -121,7 +121,7 @@ contract ReservoirLibraryTest is BaseTest {
 
     function testGetAmountOutStable(uint256 aAmountIn) public {
         // assume
-        uint256 lAmountIn = bound(aAmountIn, 1, type(uint104).max - ConstantsLib.INITIAL_MINT_AMOUNT);
+        uint256 lAmountIn = bound(aAmountIn, 1, type(uint104).max - Constants.INITIAL_MINT_AMOUNT);
 
         // arrange
         (uint104 lReserve0, uint104 lReserve1,,) = _stablePair.getReserves();
@@ -302,8 +302,8 @@ contract ReservoirLibraryTest is BaseTest {
         // arrange
         uint256 lAmtOut = 20e18;
         ConstantProductPair lOtherPair = ConstantProductPair(_createPair(address(_tokenB), address(_tokenC), 0));
-        _tokenB.mint(address(lOtherPair), ConstantsLib.INITIAL_MINT_AMOUNT);
-        _tokenC.mint(address(lOtherPair), ConstantsLib.INITIAL_MINT_AMOUNT);
+        _tokenB.mint(address(lOtherPair), Constants.INITIAL_MINT_AMOUNT);
+        _tokenC.mint(address(lOtherPair), Constants.INITIAL_MINT_AMOUNT);
         lOtherPair.mint(address(this));
 
         // act
@@ -326,14 +326,14 @@ contract ReservoirLibraryTest is BaseTest {
     // cannot use fuzz for mint amounts for new pair because the intermediate amountOuts might exceed the reserve of the next pair
     function testGetAmountsIn_SP(uint256 aAmtOut) public {
         // assume
-        // limiting the max to ConstantsLib.INITIAL_MINT_AMOUNT / 2 for now as
+        // limiting the max to Constants.INITIAL_MINT_AMOUNT / 2 for now as
         // having a large number will cause intermediate amounts to exceed reserves
-        uint256 lAmtOut = bound(aAmtOut, 1e3, ConstantsLib.INITIAL_MINT_AMOUNT / 2);
+        uint256 lAmtOut = bound(aAmtOut, 1e3, Constants.INITIAL_MINT_AMOUNT / 2);
 
         // arrange
         StablePair lOtherPair = StablePair(_createPair(address(_tokenB), address(_tokenC), 1));
-        _tokenB.mint(address(lOtherPair), ConstantsLib.INITIAL_MINT_AMOUNT);
-        _tokenC.mint(address(lOtherPair), ConstantsLib.INITIAL_MINT_AMOUNT);
+        _tokenB.mint(address(lOtherPair), Constants.INITIAL_MINT_AMOUNT);
+        _tokenC.mint(address(lOtherPair), Constants.INITIAL_MINT_AMOUNT);
         lOtherPair.mint(address(this));
 
         // act
