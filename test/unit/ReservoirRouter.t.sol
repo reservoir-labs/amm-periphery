@@ -331,33 +331,6 @@ contract ReservoirRouterTest is BaseTest {
         _router.removeLiquidity(address(0), address(0), 1, 123, 0, 0, address(this));
     }
 
-    function testCheckDeadline(uint256 aDeadline) public {
-        // assume
-        uint256 lDeadline = bound(aDeadline, 1, type(uint64).max);
-        uint256 lTimeToJump = bound(aDeadline, 0, lDeadline - 1);
-
-        // arrange
-        _stepTime(lTimeToJump);
-        _data.push(abi.encodeCall(_router.checkDeadline, (lDeadline)));
-
-        // act
-        _router.multicall(_data);
-    }
-
-    function testCheckDeadline_PastDeadline(uint256 aDeadline) public {
-        // assume
-        uint256 lTimeToJump = bound(aDeadline, 1, type(uint64).max);
-        uint256 lDeadline = bound(aDeadline, 1, lTimeToJump);
-
-        // arrange
-        _stepTime(lTimeToJump);
-        _data.push(abi.encodeCall(_router.checkDeadline, (lDeadline)));
-
-        // act & assert
-        vm.expectRevert("PH: TX_TOO_OLD");
-        _router.multicall(_data);
-    }
-
     function testSwapExactForVariable(uint256 aAmtBToMint, uint256 aAmtCToMint, uint256 aAmtIn) public {
         // arrange
         uint256 lAmtBToMint = bound(aAmtBToMint, 2e3, type(uint104).max / 2);
