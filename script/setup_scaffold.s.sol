@@ -12,6 +12,8 @@ import { FactoryStoreLib } from "amm-core/src/libraries/FactoryStore.sol";
 import { MintableERC20 } from "amm-core/test/__fixtures/MintableERC20.sol";
 
 import { ReservoirRouter } from "src/ReservoirRouter.sol";
+import { ReservoirDeployer2 } from "src/ReservoirDeployer2.sol";
+
 import { Quoter } from "src/Quoter.sol";
 
 contract SetupScaffold is BaseScript {
@@ -23,6 +25,7 @@ contract SetupScaffold is BaseScript {
     OracleCaller private _oracleCaller;
     ReservoirRouter private _router;
     Quoter private _quoter;
+    ReservoirDeployer2 private _deployer2;
 
     MintableERC20 internal _usdc;
     MintableERC20 internal _usdt;
@@ -59,21 +62,23 @@ contract SetupScaffold is BaseScript {
     }
 
     function _deployPeriphery() private {
-        _router = ReservoirRouter(
-            payable(
-                Create2Lib.computeAddress(
-                    CREATE2_FACTORY,
-                    abi.encodePacked(type(ReservoirRouter).creationCode, abi.encode(address(_factory), address(_wavax))),
-                    bytes32(uint256(0))
-                )
-            )
-        );
-        if (address(_router).code.length == 0) {
-            vm.broadcast(_defaultPrivateKey);
-            ReservoirRouter lRouter = new ReservoirRouter{salt: bytes32(uint256(0))}(address(_factory), address(_wavax));
+        _router = _deployer.deployRouter(type(ReservoirRouter).creationCode, address(_wavax));
 
-            require(lRouter == _router, "Create2 Address Mismatch for ReservoirRouter");
-        }
+//        ReservoirRouter(
+//            payable(
+//                Create2Lib.computeAddress(
+//                    CREATE2_FACTORY,
+//                    abi.encodePacked(type(ReservoirRouter).creationCode, abi.encode(address(_factory), address(_wavax))),
+//                    bytes32(uint256(0))
+//                )
+//            )
+//        );
+//        if (address(_router).code.length == 0) {
+//            vm.broadcast(_defaultPrivateKey);
+//            ReservoirRouter lRouter = new ReservoirRouter{salt: bytes32(uint256(0))}(address(_factory), address(_wavax));
+//
+//            require(lRouter == _router, "Create2 Address Mismatch for ReservoirRouter");
+//        }
 
         _quoter = Quoter(
             Create2Lib.computeAddress(
