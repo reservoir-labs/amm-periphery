@@ -12,13 +12,7 @@ import { PeripheryPayments } from "src/abstract/PeripheryPayments.sol";
 import { Multicall } from "src/abstract/Multicall.sol";
 import { SelfPermit } from "src/abstract/SelfPermit.sol";
 
-contract ReservoirRouter is
-    IReservoirRouter,
-    PeripheryImmutableState,
-    PeripheryPayments,
-    Multicall,
-    SelfPermit
-{
+contract ReservoirRouter is IReservoirRouter, PeripheryImmutableState, PeripheryPayments, Multicall, SelfPermit {
     constructor(address aFactory, address aWETH) PeripheryImmutableState(aFactory, aWETH) { } // solhint-disable-line no-empty-blocks
 
     function _addLiquidity(

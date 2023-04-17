@@ -46,9 +46,9 @@ contract SetupScaffold is BaseScript {
         _ensureDeployerExists(_defaultPrivateKey);
 
         vm.startBroadcast(_defaultPrivateKey);
-        _factory = GenericFactory(address(_deployer.deployFactory{gas: 8000000}(type(GenericFactory).creationCode)));
-        _deployer.deployConstantProduct{gas: 8000000}(type(ConstantProductPair).creationCode);
-        _deployer.deployStable{gas: 8000000}(type(StablePair).creationCode);
+        _factory = GenericFactory(address(_deployer.deployFactory{ gas: 8_000_000 }(type(GenericFactory).creationCode)));
+        _deployer.deployConstantProduct{ gas: 8_000_000 }(type(ConstantProductPair).creationCode);
+        _deployer.deployStable{ gas: 8_000_000 }(type(StablePair).creationCode);
         _oracleCaller = OracleCaller(address(_deployer.deployOracleCaller(type(OracleCaller).creationCode)));
 
         _deployer.proposeOwner(msg.sender);
@@ -59,7 +59,6 @@ contract SetupScaffold is BaseScript {
     }
 
     function _deployPeriphery() private {
-
         _router = ReservoirRouter(
             payable(
                 Create2Lib.computeAddress(
@@ -96,7 +95,7 @@ contract SetupScaffold is BaseScript {
         vm.startBroadcast(_defaultPrivateKey);
         _usdc.mint(_walletAddress, 1_000_000e6);
         _usdt.mint(_walletAddress, 1_000_000e6);
-        _wavax.deposit{value: lAmtToWrap}();
+        _wavax.deposit{ value: lAmtToWrap }();
         require(_wavax.balanceOf(_walletAddress) == lAmtToWrap, "WAVAX AMT WRONG");
         vm.stopBroadcast();
     }
