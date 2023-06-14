@@ -1,8 +1,16 @@
 [profile.default]
 solc           = "0.8.19"
-bytecode_hash  = "none"
+bytecode_hash  = "ipfs"
 optimizer_runs = 1_000_000
-remappings     = ["@openzeppelin/=lib/openzeppelin-contracts/contracts/", "amm-core/=lib/amm-core"]
+libs = ['lib']
+remappings     = [
+    "amm-core/=lib/amm-core",
+    "@openzeppelin/=lib/amm-core/lib/openzeppelin-contracts/contracts/",
+    "forge-std/=lib/amm-core/lib/forge-std/src",
+    "solmate/=lib/amm-core/lib/solmate/src",
+    "solady/=lib/amm-core/lib/solady/src",
+    "ds-test/=lib/amm-core/lib/forge-std/lib/ds-test/src/",
+]
 match_path     = "test/unit/*.sol"
 verbosity      = 3
 ignored_error_codes = []

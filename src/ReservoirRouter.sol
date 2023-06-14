@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import { IReservoirRouter } from "src/interfaces/IReservoirRouter.sol";
-import { ReservoirPair } from "amm-core/src/ReservoirPair.sol";
+import { ReservoirPair, IERC20 } from "amm-core/src/ReservoirPair.sol";
 
 import { ReservoirLibrary } from "src/libraries/ReservoirLibrary.sol";
 import { TransferHelper } from "src/libraries/TransferHelper.sol";
@@ -12,13 +12,7 @@ import { PeripheryPayments } from "src/abstract/PeripheryPayments.sol";
 import { Multicall } from "src/abstract/Multicall.sol";
 import { SelfPermit } from "src/abstract/SelfPermit.sol";
 
-contract ReservoirRouter is
-    IReservoirRouter,
-    PeripheryImmutableState,
-    PeripheryPayments,
-    Multicall,
-    SelfPermit
-{
+contract ReservoirRouter is IReservoirRouter, PeripheryImmutableState, PeripheryPayments, Multicall, SelfPermit {
     constructor(address aFactory, address aWETH) PeripheryImmutableState(aFactory, aWETH) { } // solhint-disable-line no-empty-blocks
 
     function _addLiquidity(
@@ -30,9 +24,9 @@ contract ReservoirRouter is
         uint256 aAmountAMin,
         uint256 aAmountBMin
     ) private returns (uint256 rAmountA, uint256 rAmountB, address rPair) {
-        rPair = factory.getPair(aTokenA, aTokenB, aCurveId);
+        rPair = factory.getPair(IERC20(aTokenA), IERC20(aTokenB), aCurveId);
         if (rPair == address(0)) {
-            rPair = factory.createPair(aTokenA, aTokenB, aCurveId);
+            rPair = factory.createPair(IERC20(aTokenA), IERC20(aTokenB), aCurveId);
         }
 
         (uint256 lReserveA, uint256 lReserveB) =

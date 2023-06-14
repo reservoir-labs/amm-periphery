@@ -1,4 +1,4 @@
-# Vexchange v3-core
+# Reservoir AMM-periphery
 
 ## Setup
 
@@ -48,17 +48,17 @@ forge script script/setup_scaffold.s.sol --target-contract SetupScaffold
 
 ## Contributing
 
-Are you interested in helping us build the future of Vexchange with our V3?
+Are you interested in helping us build the future of Reservoir?
 Contribute in these ways:
 
 - If you find bugs or code errors, you can open a new
-  [issue ticket here.](https://github.com/vexchange/v3-periphery/issues/new)
+  [issue ticket here.](https://github.com/reservoir-labs/amm-periphery/issues/new)
 
 - If you find an issue and would like to submit a fix for said issue, follow
   these steps:
-  - Start by forking the V3-Core repository to your local environment.
+  - Start by forking the amm-periphery repository to your local environment.
     - Make the changes you find necessary to your local repository.
-    - Submit your [pull request.](https://github.com/vexchange/v3-periphery/compare)
+    - Submit your [pull request.](https://github.com/reservoir-labs/amm-periphery/compare)
 
 - Have questions, or want to interact with the team and the community?
-  Join our [discord!](https://discord.gg/vexchange)
+  Join our [discord!](https://discord.gg/SZjwsPT7CB)

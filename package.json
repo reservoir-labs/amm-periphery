@@ -1,5 +1,5 @@
 {
-  "name": "v3-periphery",
+  "name": "amm-periphery",
   "version": "0.1.0",
   "description": "Periphery smart contracts for V3 ",
   "main": "index.js",
@@ -12,6 +12,8 @@
     "build:trident": "cd reference/sushi-trident && yarn run build",
     "ci": "forge build --force && npm run lint:check && npm run test:unit && npm run gas:check && npm run slither:check",
     "clean": "forge clean",
+    "deploy:avax:test": "forge script script/deploy_router_timelock_asset_manager.s.sol --target-contract DeployRouterTimeLockAaveManager --fork-url \"http://127.0.0.1:8545\" --broadcast -vvvv --verify --ledger --mnemonic-derivation-paths \"m/44'/60'/0'/0/2\" --sender 0x14919A4B770E16e4bD68C6209b27dF6807c06cDA",
+    "deploy:avax": "forge script script/deploy_router_timelock_asset_manager.s.sol --target-contract DeployRouterTimeLockAaveManager --fork-url \"https://api.avax.network/ext/bc/C/rpc\" --broadcast -vvvv --verify --ledger --mnemonic-derivation-paths \"m/44'/60'/0'/0/2\" --sender 0x14919A4B770E16e4bD68C6209b27dF6807c06cDA",
     "eslint": "npm run eslint:check",
     "eslint:check": "eslint scripts",
     "eslint:fix": "eslint scripts --fix",

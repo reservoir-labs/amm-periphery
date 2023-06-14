@@ -45,7 +45,7 @@ library TransferHelper {
     /// @param value The value to be transferred
     function safeTransferETH(address to, uint256 value) internal {
         // solhint-disable-next-line avoid-low-level-calls
-        (bool success,) = to.call{value: value}(new bytes(0));
+        (bool success,) = to.call{ value: value }(new bytes(0));
         require(success, "STE");
     }
 }

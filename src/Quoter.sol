@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.0;
 
-import { FixedPointMathLib } from "solmate/utils/FixedPointMathLib.sol";
+import { FixedPointMathLib } from "solady/utils/FixedPointMathLib.sol";
 import { Math } from "@openzeppelin/utils/math/Math.sol";
 
 import { ReservoirPair } from "amm-core/src/ReservoirPair.sol";
 import { StablePair } from "amm-core/src/curve/stable/StablePair.sol";
 import { Bytes32Lib } from "amm-core/src/libraries/Bytes32.sol";
 import { FactoryStoreLib } from "amm-core/src/libraries/FactoryStore.sol";
-import { GenericFactory } from "amm-core/src/GenericFactory.sol";
+import { GenericFactory, IERC20 } from "amm-core/src/GenericFactory.sol";
 import { StableMath } from "amm-core/src/libraries/StableMath.sol";
 
 import { IQuoter, ExtraData } from "src/interfaces/IQuoter.sol";
@@ -77,7 +77,7 @@ contract Quoter is IQuoter, PeripheryImmutableState {
         uint256 aAmountADesired,
         uint256 aAmountBDesired
     ) external view returns (uint256 rAmountA, uint256 rAmountB, uint256 rLiq) {
-        address lPair = factory.getPair(aTokenA, aTokenB, aCurveId);
+        address lPair = factory.getPair(IERC20(aTokenA), IERC20(aTokenB), aCurveId);
         (uint256 lReserveA, uint256 lReserveB) = (0, 0);
         uint256 lTokenAPrecisionMultiplier = ReservoirLibrary.getPrecisionMultiplier(aTokenA);
         uint256 lTokenBPrecisionMultiplier = ReservoirLibrary.getPrecisionMultiplier(aTokenB);
@@ -138,7 +138,7 @@ contract Quoter is IQuoter, PeripheryImmutableState {
         view
         returns (uint256 rAmountA, uint256 rAmountB)
     {
-        address lPair = factory.getPair(aTokenA, aTokenB, aCurveId);
+        address lPair = factory.getPair(IERC20(aTokenA), IERC20(aTokenB), aCurveId);
         if (lPair == address(0)) {
             return (0, 0);
         }

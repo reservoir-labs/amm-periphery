@@ -48,7 +48,7 @@ abstract contract PeripheryPayments is IPeripheryPayments, PeripheryImmutableSta
     function _pay(address aToken, address aPayer, address aRecipient, uint256 aValue) internal {
         if (aToken == address(WETH) && address(this).balance >= aValue) {
             // pay with WETH
-            IWETH(WETH).deposit{value: aValue}(); // wrap only what is needed to pay
+            IWETH(WETH).deposit{ value: aValue }(); // wrap only what is needed to pay
             IWETH(WETH).transfer(aRecipient, aValue);
         } else {
             // pull payment
