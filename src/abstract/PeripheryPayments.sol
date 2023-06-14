@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/token/ERC20/IERC20.sol";
-
 import "src/interfaces/IPeripheryPayments.sol";
 import "src/interfaces/IWETH.sol";
 
