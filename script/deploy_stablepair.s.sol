@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import "amm-core/script/BaseScript.sol";
 
-import { GenericFactory } from "amm-core/src/GenericFactory.sol";
+import { GenericFactory, IERC20 } from "amm-core/src/GenericFactory.sol";
 import { FactoryStoreLib } from "amm-core/src/libraries/FactoryStore.sol";
 import { Constants } from "amm-core/src/Constants.sol";
 import { StablePair } from "amm-core/src/curve/stable/StablePair.sol";
@@ -33,7 +33,7 @@ contract DeployStablePair is BaseScript {
 
     function _createStablePair() private {
         vm.startBroadcast(_defaultPrivateKey);
-        _sp1 = StablePair(_factory.createPair(_deployedUSDC, _deployedUSDT, 1));
+        _sp1 = StablePair(_factory.createPair(IERC20(_deployedUSDC), IERC20(_deployedUSDT), 1));
         MintableERC20(_deployedUSDC).mint(address(_sp1), 948_192_492_581);
         MintableERC20(_deployedUSDT).mint(address(_sp1), 1_140_591_501_001);
         _sp1.mint(_walletAddress);
@@ -46,7 +46,7 @@ contract DeployStablePair is BaseScript {
     }
 
     function run() external {
-        _ensureDeployerExists(_defaultPrivateKey);
+        _ensureDeployerExists(_defaultPrivateKey, msg.sender, msg.sender, msg.sender);
         _setFactoryAddress();
         _createStablePair();
     }

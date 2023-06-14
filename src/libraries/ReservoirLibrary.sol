@@ -1,10 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.0;
 
-import { ERC20 } from "solmate/tokens/ERC20.sol";
-
 import { ReservoirPair } from "amm-core/src/ReservoirPair.sol";
-import { IGenericFactory } from "amm-core/src/interfaces/IGenericFactory.sol";
+import { IGenericFactory, IERC20 } from "amm-core/src/interfaces/IGenericFactory.sol";
 import { ExtraData } from "src/interfaces/IQuoter.sol";
 
 import { ConstantProductPair } from "amm-core/src/curve/constant-product/ConstantProductPair.sol";
@@ -28,7 +26,7 @@ library ReservoirLibrary {
         view
         returns (address rPair)
     {
-        rPair = IGenericFactory(aFactory).getPair(aTokenA, aTokenB, aCurveId);
+        rPair = IGenericFactory(aFactory).getPair(IERC20(aTokenA), IERC20(aTokenB), aCurveId);
     }
 
     function getSwapFee(address aFactory, address aTokenA, address aTokenB, uint256 aCurveId)
@@ -41,7 +39,7 @@ library ReservoirLibrary {
 
     // does not support tokens with > 18 decimals
     function getPrecisionMultiplier(address aToken) internal view returns (uint64 rPrecisionMultiplier) {
-        rPrecisionMultiplier = uint64(10 ** (18 - ERC20(aToken).decimals()));
+        rPrecisionMultiplier = uint64(10 ** (18 - IERC20(aToken).decimals()));
     }
 
     // returns the precise amplification coefficient for calculation purposes

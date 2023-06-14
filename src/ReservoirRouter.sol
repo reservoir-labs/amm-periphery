@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import { IReservoirRouter } from "src/interfaces/IReservoirRouter.sol";
-import { ReservoirPair } from "amm-core/src/ReservoirPair.sol";
+import { ReservoirPair, IERC20 } from "amm-core/src/ReservoirPair.sol";
 
 import { ReservoirLibrary } from "src/libraries/ReservoirLibrary.sol";
 import { TransferHelper } from "src/libraries/TransferHelper.sol";
@@ -24,9 +24,9 @@ contract ReservoirRouter is IReservoirRouter, PeripheryImmutableState, Periphery
         uint256 aAmountAMin,
         uint256 aAmountBMin
     ) private returns (uint256 rAmountA, uint256 rAmountB, address rPair) {
-        rPair = factory.getPair(aTokenA, aTokenB, aCurveId);
+        rPair = factory.getPair(IERC20(aTokenA), IERC20(aTokenB), aCurveId);
         if (rPair == address(0)) {
-            rPair = factory.createPair(aTokenA, aTokenB, aCurveId);
+            rPair = factory.createPair(IERC20(aTokenA), IERC20(aTokenB), aCurveId);
         }
 
         (uint256 lReserveA, uint256 lReserveB) =

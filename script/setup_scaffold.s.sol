@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import { WETH } from "solmate/tokens/WETH.sol";
 
 import "amm-core/script/BaseScript.sol";
-import { GenericFactory } from "amm-core/src/GenericFactory.sol";
+import { GenericFactory, IERC20 } from "amm-core/src/GenericFactory.sol";
 import { ConstantProductPair } from "amm-core/src/curve/constant-product/ConstantProductPair.sol";
 import { StablePair } from "amm-core/src/curve/stable/StablePair.sol";
 import { OracleCaller } from "amm-core/src/oracle/OracleCaller.sol";
@@ -43,7 +43,7 @@ contract SetupScaffold is BaseScript {
     }
 
     function _deployCore() private {
-        _ensureDeployerExists(_defaultPrivateKey);
+        _ensureDeployerExists(_defaultPrivateKey, msg.sender, msg.sender, msg.sender);
 
         vm.startBroadcast(_defaultPrivateKey);
         _factory = GenericFactory(address(_deployer.deployFactory{ gas: 8_000_000 }(type(GenericFactory).creationCode)));
@@ -102,12 +102,12 @@ contract SetupScaffold is BaseScript {
 
     function _deployPairs() private {
         vm.startBroadcast(_defaultPrivateKey);
-        _cp1 = ConstantProductPair(_factory.createPair(address(_usdt), address(_usdc), 0));
+        _cp1 = ConstantProductPair(_factory.createPair(IERC20(address(_usdt)), IERC20(address(_usdc)), 0));
         _usdc.mint(address(_cp1), 1_000_000e6);
         _usdt.mint(address(_cp1), 950_000e6);
         _cp1.mint(_walletAddress);
 
-        _cp2 = ConstantProductPair(_factory.createPair(address(_wavax), address(_usdc), 0));
+        _cp2 = ConstantProductPair(_factory.createPair(IERC20(address(_wavax)), IERC20(address(_usdc)), 0));
         _usdc.mint(address(_cp2), 103_392_049_192);
         _wavax.transfer(address(_cp2), 302_291_291_321_201_392);
         _cp2.mint(_walletAddress);

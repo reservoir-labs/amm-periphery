@@ -81,7 +81,7 @@ contract ReservoirRouterTest is BaseTest {
         );
 
         // assert
-        ReservoirPair lPair = ReservoirPair(_factory.getPair(address(_tokenC), address(_tokenA), 0));
+        ReservoirPair lPair = ReservoirPair(_factory.getPair(IERC20(address(_tokenC)), IERC20(address(_tokenA)), 0));
         assertEq(lLiquidity, FixedPointMathLib.sqrt(lTokenAMintAmt * lTokenCMintAmt) - lPair.MINIMUM_LIQUIDITY());
         assertEq(lPair.balanceOf(_bob), lLiquidity);
         assertEq(_tokenA.balanceOf(_bob), 0);
@@ -111,7 +111,7 @@ contract ReservoirRouterTest is BaseTest {
         bytes[] memory lResult = _router.multicall{ value: 8 ether }(_data);
 
         // assert
-        ReservoirPair lPair = ReservoirPair(_factory.getPair(address(_weth), address(_tokenA), 0));
+        ReservoirPair lPair = ReservoirPair(_factory.getPair(IERC20(address(_weth)), IERC20(address(_tokenA)), 0));
         (,, uint256 lLiquidity) = abi.decode(lResult[0], (uint256, uint256, uint256));
         assertEq(lLiquidity, FixedPointMathLib.sqrt(lTokenAMintAmt * lEthMintAmt) - lPair.MINIMUM_LIQUIDITY());
         assertEq(lPair.balanceOf(_bob), lLiquidity);
@@ -223,7 +223,7 @@ contract ReservoirRouterTest is BaseTest {
         );
 
         // assert
-        ReservoirPair lPair = ReservoirPair(_factory.getPair(address(_tokenC), address(_tokenA), 1));
+        ReservoirPair lPair = ReservoirPair(_factory.getPair(IERC20(address(_tokenC)), IERC20(address(_tokenA)), 1));
         assertEq(lPair.balanceOf(_bob), lLiquidity);
         assertEq(lAmountA, lTokenAMintAmt);
         assertEq(lAmountC, lTokenCMintAmt);
