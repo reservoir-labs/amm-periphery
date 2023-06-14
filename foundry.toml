@@ -4,9 +4,12 @@ bytecode_hash  = "ipfs"
 optimizer_runs = 1_000_000
 libs = ['lib']
 remappings     = [
-    "@openzeppelin/=lib/openzeppelin-contracts/contracts/",
     "amm-core/=lib/amm-core",
-    "ds-test/=lib/forge-std/lib/ds-test/src/"
+    "@openzeppelin/=lib/amm-core/lib/openzeppelin-contracts/contracts/",
+    "forge-std/=lib/amm-core/lib/forge-std/src",
+    "solmate/=lib/amm-core/lib/solmate/src",
+    "solady/=lib/amm-core/lib/solady/src",
+    "ds-test/=lib/amm-core/lib/forge-std/lib/ds-test/src/",
 ]
 match_path     = "test/unit/*.sol"
 verbosity      = 3
