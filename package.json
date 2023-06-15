@@ -1,7 +1,7 @@
 {
   "name": "amm-periphery",
-  "version": "0.1.0",
-  "description": "Periphery smart contracts for V3 ",
+  "version": "1.0.0",
+  "description": "Periphery smart contracts for the Reservoir amm ",
   "main": "index.js",
   "directories": {
     "lib": "lib",
@@ -49,17 +49,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vexchange/v3-periphery.git"
+    "url": "git+https://github.com/reservoir-labs/amm-periphery.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/vexchange/v3-periphery/issues"
+    "url": "https://github.com/reservoir-labs/amm-periphery/issues"
   },
   "extends": [
     "@proxima-oss/eslint-config/style/standard"
   ],
-  "homepage": "https://github.com/vexchange/v3-periphery#readme",
+  "homepage": "https://github.com/reservoir-labs/amm-periphery#readme",
   "dependencies": {
     "@proxima-oss/eslint-config": "6.0.1",
     "markdownlint-cli": "0.32.2",
