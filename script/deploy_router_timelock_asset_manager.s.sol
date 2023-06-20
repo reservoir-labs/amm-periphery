@@ -16,20 +16,24 @@ contract DeployRouterTimeLockAaveManager is Script {
     function run() external {
         vm.startBroadcast(msg.sender);
         _deployRouter();
-//        _deployTimelock();
-//        _deployAaveManager();
+        _deployTimelock();
+        _deployAaveManager();
         vm.stopBroadcast();
     }
 
     function _deployRouter() internal {
-        new ReservoirRouter(FACTORY, WETH_AVAX_MAINNET);
+        ReservoirRouter lRouter = new ReservoirRouter(FACTORY, WETH_AVAX_MAINNET);
+        require(address(lRouter.factory()) == FACTORY);
+        require(address(lRouter.WETH()) == WETH_AVAX_MAINNET);
     }
 
     function _deployTimelock() internal {
-        new ReservoirTimelock();
+        ReservoirTimelock lTimelock = new ReservoirTimelock();
+        require(lTimelock.delay() == 2 days);
     }
 
     function _deployAaveManager() internal {
-        new AaveManager(AAVE_POOL_ADDRESSES_PROVIDER);
+        AaveManager lManager = new AaveManager(AAVE_POOL_ADDRESSES_PROVIDER);
+        require(lManager.addressesProvider() == AAVE_POOL_ADDRESSES_PROVIDER);
     }
 }
