@@ -59,7 +59,7 @@ contract Quoter is IQuoter, PeripheryImmutableState {
         view
         returns (uint256[] memory rAmountsOut)
     {
-        rAmountsOut = ReservoirLibrary.getAmountsOut(address(factory), aAmountIn, aPath, aCurveIds);
+        rAmountsOut = ReservoirLibrary.getAmountsOut(address(FACTORY), aAmountIn, aPath, aCurveIds);
     }
 
     function getAmountsIn(uint256 aAmountOut, address[] calldata aPath, uint256[] calldata aCurveIds)
@@ -67,7 +67,7 @@ contract Quoter is IQuoter, PeripheryImmutableState {
         view
         returns (uint256[] memory rAmountsIn)
     {
-        rAmountsIn = ReservoirLibrary.getAmountsIn(address(factory), aAmountOut, aPath, aCurveIds);
+        rAmountsIn = ReservoirLibrary.getAmountsIn(address(FACTORY), aAmountOut, aPath, aCurveIds);
     }
 
     function quoteAddLiquidity(
@@ -77,7 +77,7 @@ contract Quoter is IQuoter, PeripheryImmutableState {
         uint256 aAmountADesired,
         uint256 aAmountBDesired
     ) external view returns (uint256 rAmountA, uint256 rAmountB, uint256 rLiq) {
-        address lPair = factory.getPair(IERC20(aTokenA), IERC20(aTokenB), aCurveId);
+        address lPair = FACTORY.getPair(IERC20(aTokenA), IERC20(aTokenB), aCurveId);
         (uint256 lReserveA, uint256 lReserveB) = (0, 0);
         uint256 lTokenAPrecisionMultiplier = ReservoirLibrary.getPrecisionMultiplier(aTokenA);
         uint256 lTokenBPrecisionMultiplier = ReservoirLibrary.getPrecisionMultiplier(aTokenB);
@@ -85,7 +85,7 @@ contract Quoter is IQuoter, PeripheryImmutableState {
 
         if (lPair != address(0)) {
             lTotalSupply = ReservoirPair(lPair).totalSupply();
-            (lReserveA, lReserveB) = ReservoirLibrary.getReserves(address(factory), aTokenA, aTokenB, aCurveId);
+            (lReserveA, lReserveB) = ReservoirLibrary.getReserves(address(FACTORY), aTokenA, aTokenB, aCurveId);
         }
 
         if (lReserveA == 0 && lReserveB == 0) {
@@ -98,7 +98,7 @@ contract Quoter is IQuoter, PeripheryImmutableState {
                     rAmountB,
                     lTokenAPrecisionMultiplier,
                     lTokenBPrecisionMultiplier,
-                    2 * factory.read("SP::amplificationCoefficient").toUint64() * StableMath.A_PRECISION
+                    2 * FACTORY.read("SP::amplificationCoefficient").toUint64() * StableMath.A_PRECISION
                 );
                 rLiq = newLiq - MINIMUM_LIQUIDITY;
             }
@@ -138,13 +138,13 @@ contract Quoter is IQuoter, PeripheryImmutableState {
         view
         returns (uint256 rAmountA, uint256 rAmountB)
     {
-        address lPair = factory.getPair(IERC20(aTokenA), IERC20(aTokenB), aCurveId);
+        address lPair = FACTORY.getPair(IERC20(aTokenA), IERC20(aTokenB), aCurveId);
         if (lPair == address(0)) {
             return (0, 0);
         }
 
         (uint256 lReserveA, uint256 lReserveB) =
-            ReservoirLibrary.getReserves(address(factory), aTokenA, aTokenB, aCurveId);
+            ReservoirLibrary.getReserves(address(FACTORY), aTokenA, aTokenB, aCurveId);
         uint256 lTotalSupply = ReservoirPair(lPair).totalSupply();
 
         rAmountA = aLiq * lReserveA / lTotalSupply;

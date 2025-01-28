@@ -19,7 +19,7 @@ contract DeployRouterTimeLockAaveManager is Script {
 
     function _deployRouter() internal {
         ReservoirRouter lRouter = new ReservoirRouter(FACTORY, WETH_AVAX_MAINNET);
-        require(address(lRouter.factory()) == FACTORY);
+        require(address(lRouter.FACTORY()) == FACTORY);
         require(address(lRouter.WETH()) == WETH_AVAX_MAINNET);
     }
 

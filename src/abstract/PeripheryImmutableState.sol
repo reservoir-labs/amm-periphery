@@ -9,12 +9,12 @@ import { IWETH } from "src/interfaces/IWETH.sol";
 /// @notice Immutable state used by periphery contracts
 abstract contract PeripheryImmutableState is IPeripheryImmutableState {
     /// @inheritdoc IPeripheryImmutableState
-    GenericFactory public immutable override factory;
+    GenericFactory public immutable override FACTORY;
     /// @inheritdoc IPeripheryImmutableState
-    IWETH public immutable override WETH; // solhint-disable-line var-name-mixedcase
+    IWETH public immutable override WETH;
 
     constructor(address aFactory, address aWETH) {
-        factory = GenericFactory(aFactory);
+        FACTORY = GenericFactory(aFactory);
         WETH = IWETH(aWETH);
     }
 }

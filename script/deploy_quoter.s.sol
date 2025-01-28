@@ -17,7 +17,7 @@ contract DeployQuoter is Script {
 
     function _deployQuoter() internal {
         Quoter lQuoter = new Quoter(FACTORY, WETH_AVAX_MAINNET);
-        require(address(lQuoter.factory()) == FACTORY);
+        require(address(lQuoter.FACTORY()) == FACTORY);
         require(address(lQuoter.WETH()) == WETH_AVAX_MAINNET);
     }
 }

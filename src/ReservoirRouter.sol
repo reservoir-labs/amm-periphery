@@ -5,7 +5,6 @@ import { IReservoirRouter } from "src/interfaces/IReservoirRouter.sol";
 import { ReservoirPair, IERC20 } from "amm-core/src/ReservoirPair.sol";
 
 import { ReservoirLibrary } from "src/libraries/ReservoirLibrary.sol";
-import { TransferHelper } from "src/libraries/TransferHelper.sol";
 
 import { PeripheryImmutableState } from "src/abstract/PeripheryImmutableState.sol";
 import { PeripheryPayments } from "src/abstract/PeripheryPayments.sol";
@@ -31,13 +30,13 @@ contract ReservoirRouter is IReservoirRouter, PeripheryImmutableState, Periphery
         uint256 aAmountAMin,
         uint256 aAmountBMin
     ) private returns (uint256 rAmountA, uint256 rAmountB, address rPair) {
-        rPair = factory.getPair(IERC20(aTokenA), IERC20(aTokenB), aCurveId);
+        rPair = FACTORY.getPair(IERC20(aTokenA), IERC20(aTokenB), aCurveId);
         if (rPair == address(0)) {
-            rPair = factory.createPair(IERC20(aTokenA), IERC20(aTokenB), aCurveId);
+            rPair = FACTORY.createPair(IERC20(aTokenA), IERC20(aTokenB), aCurveId);
         }
 
         (uint256 lReserveA, uint256 lReserveB) =
-            ReservoirLibrary.getReserves(address(factory), aTokenA, aTokenB, aCurveId);
+            ReservoirLibrary.getReserves(address(FACTORY), aTokenA, aTokenB, aCurveId);
         if (lReserveA == 0 && lReserveB == 0) {
             (rAmountA, rAmountB) = (aAmountADesired, aAmountBDesired);
             return (rAmountA, rAmountB, rPair);
@@ -84,7 +83,7 @@ contract ReservoirRouter is IReservoirRouter, PeripheryImmutableState, Periphery
         address aTo
     ) external payable returns (uint256 rAmountA, uint256 rAmountB) {
         require(aTo != address(0), RR_ToZeroAddress());
-        address lPair = ReservoirLibrary.pairFor(address(factory), aTokenA, aTokenB, aCurveId);
+        address lPair = ReservoirLibrary.pairFor(address(FACTORY), aTokenA, aTokenB, aCurveId);
         ReservoirPair(lPair).transferFrom(msg.sender, lPair, aLiq);
         (uint256 lAmount0, uint256 lAmount1) = ReservoirPair(lPair).burn(aTo);
 
@@ -106,12 +105,12 @@ contract ReservoirRouter is IReservoirRouter, PeripheryImmutableState, Periphery
             (address lInput, address lOutput) = (aPath[i], aPath[i + 1]);
             (address lToken0,) = ReservoirLibrary.sortTokens(lInput, lOutput);
             address lTo = i < aPath.length - 2
-                ? ReservoirLibrary.pairFor(address(factory), lOutput, aPath[i + 2], aCurveIds[i + 1])
+                ? ReservoirLibrary.pairFor(address(FACTORY), lOutput, aPath[i + 2], aCurveIds[i + 1])
                 : aTo;
             lAmount = lInput == lToken0 ? int256(lAmount) : -int256(lAmount);
 
             lAmount = int256(
-                ReservoirPair(ReservoirLibrary.pairFor(address(factory), lInput, lOutput, aCurveIds[i])).swap(
+                ReservoirPair(ReservoirLibrary.pairFor(address(FACTORY), lInput, lOutput, aCurveIds[i])).swap(
                     lAmount, true, lTo, new bytes(0)
                 )
             );
@@ -133,7 +132,7 @@ contract ReservoirRouter is IReservoirRouter, PeripheryImmutableState, Periphery
         _pay(
             aPath[0],
             msg.sender,
-            ReservoirLibrary.pairFor(address(factory), aPath[0], aPath[1], aCurveIds[0]),
+            ReservoirLibrary.pairFor(address(FACTORY), aPath[0], aPath[1], aCurveIds[0]),
             aAmountIn
         );
         rAmountOut = _swapExactForVariable(aAmountIn, aPath, aCurveIds, aTo);
@@ -152,12 +151,12 @@ contract ReservoirRouter is IReservoirRouter, PeripheryImmutableState, Periphery
             (address lToken0,) = ReservoirLibrary.sortTokens(lInput, lOutput);
             // PERF: Can avoid branching on every iteration by moving the last step outside of the for loop
             address lTo = i < aPath.length - 2
-                ? ReservoirLibrary.pairFor(address(factory), lOutput, aPath[i + 2], aCurveIds[i + 1])
+                ? ReservoirLibrary.pairFor(address(FACTORY), lOutput, aPath[i + 2], aCurveIds[i + 1])
                 : aTo;
 
             int256 lAmount = lOutput == lToken0 ? int256(aAmounts[i + 1]) : -int256(aAmounts[i + 1]);
 
-            ReservoirPair(ReservoirLibrary.pairFor(address(factory), lInput, lOutput, aCurveIds[i])).swap(
+            ReservoirPair(ReservoirLibrary.pairFor(address(FACTORY), lInput, lOutput, aCurveIds[i])).swap(
                 lAmount, false, lTo, new bytes(0)
             );
 
@@ -174,13 +173,13 @@ contract ReservoirRouter is IReservoirRouter, PeripheryImmutableState, Periphery
         uint256[] calldata aCurveIds,
         address aTo
     ) external payable returns (uint256[] memory rAmounts) {
-        rAmounts = ReservoirLibrary.getAmountsIn(address(factory), aAmountOut, aPath, aCurveIds);
+        rAmounts = ReservoirLibrary.getAmountsIn(address(FACTORY), aAmountOut, aPath, aCurveIds);
         require(rAmounts[0] > aAmountInMax, RR_ExcessiveInputAmount());
 
         _pay(
             aPath[0],
             msg.sender,
-            ReservoirLibrary.pairFor(address(factory), aPath[0], aPath[1], aCurveIds[0]),
+            ReservoirLibrary.pairFor(address(FACTORY), aPath[0], aPath[1], aCurveIds[0]),
             rAmounts[0]
         );
         _swapVariableForExact(rAmounts, aPath, aCurveIds, aTo);

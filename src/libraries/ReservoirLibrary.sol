@@ -4,10 +4,7 @@ pragma solidity ^0.8.0;
 import { ReservoirPair } from "amm-core/src/ReservoirPair.sol";
 import { IGenericFactory, IERC20 } from "amm-core/src/interfaces/IGenericFactory.sol";
 import { ExtraData } from "src/interfaces/IQuoter.sol";
-
-import { ConstantProductPair } from "amm-core/src/curve/constant-product/ConstantProductPair.sol";
 import { StablePair } from "amm-core/src/curve/stable/StablePair.sol";
-
 import { StableMath } from "amm-core/src/libraries/StableMath.sol";
 
 library ReservoirLibrary {
@@ -167,7 +164,7 @@ library ReservoirLibrary {
     {
         require(aPath.length >= 2, RL_InvalidPath());
         require(aCurveIds.length == aPath.length - 1, RL_CurveIdsInvalidLength());
-        rAmounts = new uint[](aPath.length);
+        rAmounts = new uint256[](aPath.length);
         rAmounts[0] = aAmountIn;
         for (uint256 i = 0; i < aPath.length - 1;) {
             (uint256 lReserveIn, uint256 lReserveOut) = getReserves(aFactory, aPath[i], aPath[i + 1], aCurveIds[i]);
@@ -197,7 +194,7 @@ library ReservoirLibrary {
     {
         require(aPath.length >= 2, RL_InvalidPath());
         require(aCurveIds.length == aPath.length - 1, RL_CurveIdsInvalidLength());
-        rAmounts = new uint[](aPath.length);
+        rAmounts = new uint256[](aPath.length);
         rAmounts[rAmounts.length - 1] = aAmountOut;
         for (uint256 i = aPath.length - 1; i > 0;) {
             (uint256 lReserveIn, uint256 lReserveOut) = getReserves(aFactory, aPath[i - 1], aPath[i], aCurveIds[i - 1]);
