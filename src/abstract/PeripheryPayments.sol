@@ -9,14 +9,18 @@ import "src/libraries/TransferHelper.sol";
 import "src/abstract/PeripheryImmutableState.sol";
 
 abstract contract PeripheryPayments is IPeripheryPayments, PeripheryImmutableState {
+    error NotWETH();
+    error InsufficientWETH();
+    error InsufficientToken();
+    
     receive() external payable {
-        require(msg.sender == address(WETH), "PP: NOT_WETH");
+        require(msg.sender == address(WETH), NotWETH());
     }
 
     /// @inheritdoc IPeripheryPayments
     function unwrapWETH(uint256 aAmountMinimum, address aRecipient) public payable override {
         uint256 lBalanceWETH = IWETH(WETH).balanceOf(address(this));
-        require(lBalanceWETH >= aAmountMinimum, "PP: INSUFFICIENT_WETH");
+        require(lBalanceWETH >= aAmountMinimum, InsufficientWETH());
 
         if (lBalanceWETH > 0) {
             IWETH(WETH).withdraw(lBalanceWETH);
@@ -27,7 +31,7 @@ abstract contract PeripheryPayments is IPeripheryPayments, PeripheryImmutableSta
     /// @inheritdoc IPeripheryPayments
     function sweepToken(address aToken, uint256 aAmountMinimum, address aRecipient) public payable override {
         uint256 lBalanceToken = IERC20(aToken).balanceOf(address(this));
-        require(lBalanceToken >= aAmountMinimum, "PP: INSUFFICIENT_TOKEN");
+        require(lBalanceToken >= aAmountMinimum, InsufficientToken());
 
         if (lBalanceToken > 0) {
             TransferHelper.safeTransfer(aToken, aRecipient, lBalanceToken);
