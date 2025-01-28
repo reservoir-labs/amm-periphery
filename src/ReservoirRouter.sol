@@ -15,6 +15,13 @@ import { SelfPermit } from "src/abstract/SelfPermit.sol";
 contract ReservoirRouter is IReservoirRouter, PeripheryImmutableState, PeripheryPayments, Multicall, SelfPermit {
     constructor(address aFactory, address aWETH) PeripheryImmutableState(aFactory, aWETH) { } // solhint-disable-line no-empty-blocks
 
+    error InsufficientBAmount();
+    error InsufficientAAmount();
+    error ToZeroAddress();
+    error AmountInTooLarge();
+    error InsufficientOutputAmount();
+    error ExcessiveInputAmount();
+
     function _addLiquidity(
         address aTokenA,
         address aTokenB,
@@ -37,12 +44,12 @@ contract ReservoirRouter is IReservoirRouter, PeripheryImmutableState, Periphery
         }
         uint256 lAmountBOptimal = ReservoirLibrary.quote(aAmountADesired, lReserveA, lReserveB);
         if (lAmountBOptimal <= aAmountBDesired) {
-            require(lAmountBOptimal >= aAmountBMin, "RR: INSUFFICIENT_B_AMOUNT");
+            require(lAmountBOptimal >= aAmountBMin, InsufficientBAmount());
             (rAmountA, rAmountB) = (aAmountADesired, lAmountBOptimal);
         } else {
             uint256 lAmountAOptimal = ReservoirLibrary.quote(aAmountBDesired, lReserveB, lReserveA);
             assert(lAmountAOptimal <= aAmountADesired);
-            require(lAmountAOptimal >= aAmountAMin, "RR: INSUFFICIENT_A_AMOUNT");
+            require (lAmountAOptimal >= aAmountAMin, InsufficientAAmount());
             (rAmountA, rAmountB) = (lAmountAOptimal, aAmountBDesired);
         }
     }
@@ -76,7 +83,7 @@ contract ReservoirRouter is IReservoirRouter, PeripheryImmutableState, Periphery
         uint256 aAmountBMin,
         address aTo
     ) external payable returns (uint256 rAmountA, uint256 rAmountB) {
-        require(aTo != address(0), "RR: TO_ZERO_ADDRESS");
+        require(aTo != address(0), ToZeroAddress());
         address lPair = ReservoirLibrary.pairFor(address(factory), aTokenA, aTokenB, aCurveId);
         ReservoirPair(lPair).transferFrom(msg.sender, lPair, aLiq);
         (uint256 lAmount0, uint256 lAmount1) = ReservoirPair(lPair).burn(aTo);
@@ -84,8 +91,8 @@ contract ReservoirRouter is IReservoirRouter, PeripheryImmutableState, Periphery
         (address lToken0,) = ReservoirLibrary.sortTokens(aTokenA, aTokenB);
         (rAmountA, rAmountB) = aTokenA == lToken0 ? (lAmount0, lAmount1) : (lAmount1, lAmount0);
 
-        require(rAmountA >= aAmountAMin, "RR: INSUFFICIENT_A_AMOUNT");
-        require(rAmountB >= aAmountBMin, "RR: INSUFFICIENT_B_AMOUNT");
+        require(rAmountA >= aAmountAMin, InsufficientAAmount());
+        require(rAmountB >= aAmountBMin, InsufficientBAmount());
     }
 
     /// @dev requires the initial amount to have already been sent to the first pair
@@ -93,7 +100,7 @@ contract ReservoirRouter is IReservoirRouter, PeripheryImmutableState, Periphery
         private
         returns (uint256 rFinalAmount)
     {
-        require(aAmountIn <= type(uint104).max, "RR: AMOUNT_IN_TOO_LARGE");
+        require(aAmountIn <= type(uint104).max, AmountInTooLarge());
         int256 lAmount = int256(aAmountIn);
         for (uint256 i = 0; i < aPath.length - 1;) {
             (address lInput, address lOutput) = (aPath[i], aPath[i + 1]);
@@ -130,7 +137,7 @@ contract ReservoirRouter is IReservoirRouter, PeripheryImmutableState, Periphery
             aAmountIn
         );
         rAmountOut = _swapExactForVariable(aAmountIn, aPath, aCurveIds, aTo);
-        require(rAmountOut >= aAmountOutMin, "RR: INSUFFICIENT_OUTPUT_AMOUNT");
+        require(rAmountOut >= aAmountOutMin, InsufficientOutputAmount());
     }
 
     /// @dev requires the initial amount to have already been sent to the first pair
@@ -168,7 +175,7 @@ contract ReservoirRouter is IReservoirRouter, PeripheryImmutableState, Periphery
         address aTo
     ) external payable returns (uint256[] memory rAmounts) {
         rAmounts = ReservoirLibrary.getAmountsIn(address(factory), aAmountOut, aPath, aCurveIds);
-        require(rAmounts[0] <= aAmountInMax, "RR: EXCESSIVE_INPUT_AMOUNT");
+        require(rAmounts[0] > aAmountInMax, ExcessiveInputAmount());
 
         _pay(
             aPath[0],
