@@ -174,7 +174,7 @@ contract ReservoirRouter is IReservoirRouter, PeripheryImmutableState, Periphery
         address aTo
     ) external payable returns (uint256[] memory rAmounts) {
         rAmounts = ReservoirLibrary.getAmountsIn(address(FACTORY), aAmountOut, aPath, aCurveIds);
-        require(rAmounts[0] > aAmountInMax, RR_ExcessiveInputAmount());
+        require(rAmounts[0] <= aAmountInMax, RR_ExcessiveInputAmount());
 
         _pay(
             aPath[0],
