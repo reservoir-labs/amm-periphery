@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import { IERC20 } from "forge-std/interfaces/IERC20.sol";
-import { IERC20Permit } from "@openzeppelin/token/ERC20/extensions/draft-IERC20Permit.sol";
+import { IERC20Permit } from "@openzeppelin/token/ERC20/extensions/IERC20Permit.sol";
 
 import { ISelfPermit } from "src/interfaces/ISelfPermit.sol";
 import { IERC20PermitAllowed } from "src/interfaces/IERC20PermitAllowed.sol";

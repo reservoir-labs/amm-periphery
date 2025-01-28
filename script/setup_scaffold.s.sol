@@ -7,7 +7,6 @@ import "amm-core/script/BaseScript.sol";
 import { GenericFactory, IERC20 } from "amm-core/src/GenericFactory.sol";
 import { ConstantProductPair } from "amm-core/src/curve/constant-product/ConstantProductPair.sol";
 import { StablePair } from "amm-core/src/curve/stable/StablePair.sol";
-import { OracleCaller } from "amm-core/src/oracle/OracleCaller.sol";
 import { FactoryStoreLib } from "amm-core/src/libraries/FactoryStore.sol";
 import { MintableERC20 } from "amm-core/test/__fixtures/MintableERC20.sol";
 
@@ -20,7 +19,6 @@ contract SetupScaffold is BaseScript {
     address payable private constant AVAX_MAINNET_WAVAX = payable(0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7);
 
     GenericFactory private _factory;
-    OracleCaller private _oracleCaller;
     ReservoirRouter private _router;
     Quoter private _quoter;
 
@@ -49,12 +47,10 @@ contract SetupScaffold is BaseScript {
         _factory = GenericFactory(address(_deployer.deployFactory{ gas: 8_000_000 }(type(GenericFactory).creationCode)));
         _deployer.deployConstantProduct{ gas: 8_000_000 }(type(ConstantProductPair).creationCode);
         _deployer.deployStable{ gas: 8_000_000 }(type(StablePair).creationCode);
-        _oracleCaller = OracleCaller(address(_deployer.deployOracleCaller(type(OracleCaller).creationCode)));
 
         _deployer.proposeOwner(msg.sender);
         _deployer.claimOwnership();
         _deployer.claimFactory();
-        _deployer.claimOracleCaller();
         vm.stopBroadcast();
     }
 
