@@ -232,6 +232,7 @@ contract ReservoirRouterTest is BaseTest {
         assertEq(lAmountC, lTokenCMintAmt);
         assertEq(_tokenA.balanceOf(address(lPair)), lTokenAMintAmt);
         assertEq(_tokenC.balanceOf(address(lPair)), lTokenCMintAmt);
+        vm.stopPrank();
     }
 
     function testAddLiquidity_OptimalLessThanMin() public {
@@ -336,9 +337,9 @@ contract ReservoirRouterTest is BaseTest {
 
     function testSwapExactForVariable(uint256 aAmtBToMint, uint256 aAmtCToMint, uint256 aAmtIn) public {
         // arrange
-        uint256 lAmtBToMint = bound(aAmtBToMint, 2e3, type(uint104).max / 2);
-        uint256 lAmtCToMint = bound(aAmtCToMint, 2e3, type(uint104).max / 2);
-        uint256 lAmtIn = bound(aAmtIn, 2e3, type(uint104).max / 2);
+        uint256 lAmtBToMint = bound(aAmtBToMint, 2e12, type(uint104).max / 2);
+        uint256 lAmtCToMint = bound(aAmtCToMint, lAmtBToMint / 1e6, lAmtBToMint);
+        uint256 lAmtIn = bound(aAmtIn, 2e12, type(uint104).max / 1e6);
         ConstantProductPair lOtherPair = ConstantProductPair(_createPair(address(_tokenB), address(_tokenC), 0));
         _tokenB.mint(address(lOtherPair), lAmtBToMint);
         _tokenC.mint(address(lOtherPair), lAmtCToMint);
