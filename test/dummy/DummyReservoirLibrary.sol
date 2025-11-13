@@ -20,19 +20,39 @@ contract DummyReservoirLibrary {
         return ReservoirLibrary.quote(aAmountA, aReserveA, aReserveB);
     }
 
-    function getAmountInConstantProduct(uint256 aAmountOut, uint256 aReserveIn, uint256 aReserveOut, uint256 aSwapFee) external view returns (uint256) {
+    function getAmountInConstantProduct(uint256 aAmountOut, uint256 aReserveIn, uint256 aReserveOut, uint256 aSwapFee)
+        external
+        view
+        returns (uint256)
+    {
         return ReservoirLibrary.getAmountInConstantProduct(aAmountOut, aReserveIn, aReserveOut, aSwapFee);
     }
 
-    function getAmountInStable(uint256 aAmountOut, uint256 aReserveIn, uint256 aReserveOut, uint256 aSwapFee, ExtraData calldata aExtraData) external view returns (uint256) {
+    function getAmountInStable(
+        uint256 aAmountOut,
+        uint256 aReserveIn,
+        uint256 aReserveOut,
+        uint256 aSwapFee,
+        ExtraData calldata aExtraData
+    ) external view returns (uint256) {
         return ReservoirLibrary.getAmountInStable(aAmountOut, aReserveIn, aReserveOut, aSwapFee, aExtraData);
     }
 
-    function getAmountOutConstantProduct(uint256 aAmountIn, uint256 aReserveIn, uint256 aReserveOut, uint256 aSwapFee) external view returns (uint256) {
+    function getAmountOutConstantProduct(uint256 aAmountIn, uint256 aReserveIn, uint256 aReserveOut, uint256 aSwapFee)
+        external
+        view
+        returns (uint256)
+    {
         return ReservoirLibrary.getAmountOutConstantProduct(aAmountIn, aReserveIn, aReserveOut, aSwapFee);
     }
 
-    function getAmountOutStable(uint256 aAmountIn, uint256 aReserveIn, uint256 aReserveOut, uint256 aSwapFee, ExtraData calldata aExtraData) external view returns (uint256) {
+    function getAmountOutStable(
+        uint256 aAmountIn,
+        uint256 aReserveIn,
+        uint256 aReserveOut,
+        uint256 aSwapFee,
+        ExtraData calldata aExtraData
+    ) external view returns (uint256) {
         return ReservoirLibrary.getAmountOutStable(aAmountIn, aReserveIn, aReserveOut, aSwapFee, aExtraData);
     }
 }

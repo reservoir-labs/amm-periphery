@@ -10,7 +10,7 @@ abstract contract PeripheryPayments is IPeripheryPayments, PeripheryImmutableSta
     error PP_NotWETH();
     error PP_InsufficientWETH();
     error PP_InsufficientToken();
-    
+
     receive() external payable {
         require(msg.sender == address(WETH), PP_NotWETH());
     }

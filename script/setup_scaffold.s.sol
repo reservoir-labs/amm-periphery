@@ -56,17 +56,18 @@ contract SetupScaffold is BaseScript {
 
     function _deployPeriphery() private {
         _router = ReservoirRouter(
-            payable(
-                Create2Lib.computeAddress(
+            payable(Create2Lib.computeAddress(
                     CREATE2_FACTORY,
-                    abi.encodePacked(type(ReservoirRouter).creationCode, abi.encode(address(_factory), address(_wavax))),
+                    abi.encodePacked(
+                        type(ReservoirRouter).creationCode, abi.encode(address(_factory), address(_wavax))
+                    ),
                     bytes32(uint256(0))
-                )
-            )
+                ))
         );
         if (address(_router).code.length == 0) {
             vm.broadcast(_defaultPrivateKey);
-            ReservoirRouter lRouter = new ReservoirRouter{salt: bytes32(uint256(0))}(address(_factory), address(_wavax));
+            ReservoirRouter lRouter =
+                new ReservoirRouter{ salt: bytes32(uint256(0)) }(address(_factory), address(_wavax));
 
             require(lRouter == _router, "Create2 Address Mismatch for ReservoirRouter");
         }
@@ -80,7 +81,7 @@ contract SetupScaffold is BaseScript {
         );
         if (address(_quoter).code.length == 0) {
             vm.broadcast(_defaultPrivateKey);
-            Quoter lQuoter = new Quoter{salt: bytes32(uint256(0))}(address(_factory), address(_wavax));
+            Quoter lQuoter = new Quoter{ salt: bytes32(uint256(0)) }(address(_factory), address(_wavax));
 
             require(lQuoter == _quoter, "Create2 Address mismatch for Quoter");
         }

@@ -48,7 +48,7 @@ contract ReservoirRouter is IReservoirRouter, PeripheryImmutableState, Periphery
         } else {
             uint256 lAmountAOptimal = ReservoirLibrary.quote(aAmountBDesired, lReserveB, lReserveA);
             assert(lAmountAOptimal <= aAmountADesired);
-            require (lAmountAOptimal >= aAmountAMin, RR_InsufficientAAmount());
+            require(lAmountAOptimal >= aAmountAMin, RR_InsufficientAAmount());
             (rAmountA, rAmountB) = (lAmountAOptimal, aAmountBDesired);
         }
     }
@@ -110,9 +110,8 @@ contract ReservoirRouter is IReservoirRouter, PeripheryImmutableState, Periphery
             lAmount = lInput == lToken0 ? int256(lAmount) : -int256(lAmount);
 
             lAmount = int256(
-                ReservoirPair(ReservoirLibrary.pairFor(address(FACTORY), lInput, lOutput, aCurveIds[i])).swap(
-                    lAmount, true, lTo, new bytes(0)
-                )
+                ReservoirPair(ReservoirLibrary.pairFor(address(FACTORY), lInput, lOutput, aCurveIds[i]))
+                    .swap(lAmount, true, lTo, new bytes(0))
             );
             unchecked {
                 i += 1;
@@ -156,9 +155,8 @@ contract ReservoirRouter is IReservoirRouter, PeripheryImmutableState, Periphery
 
             int256 lAmount = lOutput == lToken0 ? int256(aAmounts[i + 1]) : -int256(aAmounts[i + 1]);
 
-            ReservoirPair(ReservoirLibrary.pairFor(address(FACTORY), lInput, lOutput, aCurveIds[i])).swap(
-                lAmount, false, lTo, new bytes(0)
-            );
+            ReservoirPair(ReservoirLibrary.pairFor(address(FACTORY), lInput, lOutput, aCurveIds[i]))
+                .swap(lAmount, false, lTo, new bytes(0));
 
             unchecked {
                 i += 1;
