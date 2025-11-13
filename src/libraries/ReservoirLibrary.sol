@@ -126,8 +126,8 @@ library ReservoirLibrary {
             aAmountIn,
             aReserveIn,
             aReserveOut,
-            aData.token0PrecisionMultiplier,
-            aData.token1PrecisionMultiplier,
+            aData.tokenInPrecisionMultiplier,
+            aData.tokenOutPrecisionMultiplier,
             true,
             aSwapFee,
             2 * aData.amplificationCoefficient
@@ -148,8 +148,8 @@ library ReservoirLibrary {
             aAmountOut,
             aReserveIn,
             aReserveOut,
-            aData.token0PrecisionMultiplier,
-            aData.token1PrecisionMultiplier,
+            aData.tokenInPrecisionMultiplier,
+            aData.tokenOutPrecisionMultiplier,
             false,
             aSwapFee,
             2 * aData.amplificationCoefficient
