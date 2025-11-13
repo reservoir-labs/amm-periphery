@@ -8,7 +8,7 @@ import { IWETH } from "src/interfaces/IWETH.sol";
 /// @notice Functions that return immutable state of the router
 interface IPeripheryImmutableState {
     /// @return Returns the address of the Reservoir generic factory
-    function factory() external view returns (GenericFactory);
+    function FACTORY() external view returns (GenericFactory);
 
     /// @return Returns the address of WETH
     // solhint-disable-next-line func-name-mixedcase

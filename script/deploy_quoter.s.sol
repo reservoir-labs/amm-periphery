@@ -6,8 +6,8 @@ import "forge-std/Script.sol";
 import { Quoter } from "src/Quoter.sol";
 
 contract DeployQuoter is Script {
-    address internal constant FACTORY = 0xDd723D9273642D82c5761a4467fD5265d94a22da;
-    address internal constant WETH_AVAX_MAINNET = 0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7;
+    address internal constant FACTORY = 0x1A49Bc8464731A08c16EdF17F33CF77db37228a4;
+    address internal constant WETH = 0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7;
 
     function run() external {
         vm.startBroadcast(msg.sender);
@@ -16,8 +16,8 @@ contract DeployQuoter is Script {
     }
 
     function _deployQuoter() internal {
-        Quoter lQuoter = new Quoter(FACTORY, WETH_AVAX_MAINNET);
-        require(address(lQuoter.factory()) == FACTORY);
-        require(address(lQuoter.WETH()) == WETH_AVAX_MAINNET);
+        Quoter lQuoter = new Quoter(FACTORY, WETH);
+        require(address(lQuoter.FACTORY()) == FACTORY);
+        require(address(lQuoter.WETH()) == WETH);
     }
 }

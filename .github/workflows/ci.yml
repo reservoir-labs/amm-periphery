@@ -16,7 +16,7 @@ jobs:
           submodules: recursive
       - uses: foundry-rs/foundry-toolchain@v1
         with:
-          version: nightly-e15e33a07c0920189fc336391f538c3dad53da73
+          version: stable
       - run: forge build
 
   lint:
@@ -41,8 +41,10 @@ jobs:
           submodules: recursive
       - uses: foundry-rs/foundry-toolchain@v1
         with:
-          version: nightly-e15e33a07c0920189fc336391f538c3dad53da73
+          version: stable
       - run: npm run test:unit
+      - run: cat script/optimized-deployer-meta
+        if: always()
 
   check-gas:
     runs-on: ubuntu-latest
@@ -53,10 +55,13 @@ jobs:
           submodules: recursive
       - uses: foundry-rs/foundry-toolchain@v1
         with:
-          version: nightly-e15e33a07c0920189fc336391f538c3dad53da73
-      - run: forge snapshot --check
+          version: stable
+      - run: forge snapshot
         env:
           FOUNDRY_PROFILE: default
+
+      - run: cat .gas-snapshot
+        if: always()
 
 #  coverage:
 #    runs-on: ubuntu-latest

@@ -1,22 +1,24 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 pragma solidity ^0.8.0;
 
-import "src/interfaces/IPeripheryPayments.sol";
-import "src/interfaces/IWETH.sol";
-
-import "src/libraries/TransferHelper.sol";
-
-import "src/abstract/PeripheryImmutableState.sol";
+import { IPeripheryPayments } from "src/interfaces/IPeripheryPayments.sol";
+import { IWETH, IERC20 } from "src/interfaces/IWETH.sol";
+import { TransferHelper } from "src/libraries/TransferHelper.sol";
+import { PeripheryImmutableState } from "src/abstract/PeripheryImmutableState.sol";
 
 abstract contract PeripheryPayments is IPeripheryPayments, PeripheryImmutableState {
+    error PP_NotWETH();
+    error PP_InsufficientWETH();
+    error PP_InsufficientToken();
+
     receive() external payable {
-        require(msg.sender == address(WETH), "PP: NOT_WETH");
+        require(msg.sender == address(WETH), PP_NotWETH());
     }
 
     /// @inheritdoc IPeripheryPayments
     function unwrapWETH(uint256 aAmountMinimum, address aRecipient) public payable override {
         uint256 lBalanceWETH = IWETH(WETH).balanceOf(address(this));
-        require(lBalanceWETH >= aAmountMinimum, "PP: INSUFFICIENT_WETH");
+        require(lBalanceWETH >= aAmountMinimum, PP_InsufficientWETH());
 
         if (lBalanceWETH > 0) {
             IWETH(WETH).withdraw(lBalanceWETH);
@@ -27,7 +29,7 @@ abstract contract PeripheryPayments is IPeripheryPayments, PeripheryImmutableSta
     /// @inheritdoc IPeripheryPayments
     function sweepToken(address aToken, uint256 aAmountMinimum, address aRecipient) public payable override {
         uint256 lBalanceToken = IERC20(aToken).balanceOf(address(this));
-        require(lBalanceToken >= aAmountMinimum, "PP: INSUFFICIENT_TOKEN");
+        require(lBalanceToken >= aAmountMinimum, PP_InsufficientToken());
 
         if (lBalanceToken > 0) {
             TransferHelper.safeTransfer(aToken, aRecipient, lBalanceToken);

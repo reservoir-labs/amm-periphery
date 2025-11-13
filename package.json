@@ -12,9 +12,12 @@
     "build:trident": "cd reference/sushi-trident && yarn run build",
     "ci": "forge build --force && npm run lint:check && npm run test:unit && npm run gas:check && npm run slither:check",
     "clean": "forge clean",
-    "deploy:avax:test": "forge script script/deploy_router_timelock_asset_manager.s.sol --target-contract DeployRouterTimeLockAaveManager --fork-url \"http://127.0.0.1:8545\" --broadcast -vvvv --verify --ledger --mnemonic-derivation-paths \"m/44'/60'/0'/0/4\" --sender 0x5c5c2a70504AfD08845D5Ee6fD77E98E0bC3dFcd",
-    "deploy:avax": "forge script script/deploy_router_timelock_asset_manager.s.sol --target-contract DeployRouterTimeLockAaveManager --fork-url \"https://api.avax.network/ext/bc/C/rpc\" --broadcast -vvvv --verify --ledger --mnemonic-derivation-paths \"m/44'/60'/0'/0/4\" --sender 0x5c5c2a70504AfD08845D5Ee6fD77E98E0bC3dFcd",
-    "deploy:avax:quoter": "forge script script/deploy_quoter.s.sol --target-contract DeployQuoter --fork-url \"https://api.avax.network/ext/bc/C/rpc\" --broadcast -vvvv --verify --ledger --mnemonic-derivation-paths \"m/44'/60'/0'/0/4\" --sender 0x5c5c2a70504AfD08845D5Ee6fD77E98E0bC3dFcd",
+    "deploy:arb:test": "forge script script/deploy_router_timelock.s.sol --target-contract DeployRouterTimeLock --fork-url \"http://127.0.0.1:8545\" --broadcast -vvvv --verify --ledger --mnemonic-derivation-paths \"m/44'/60'/0'/0/1\" --sender 0x2508b97B8041960ccA8AaBC7662F07EC8e285F6d --etherscan-api-key $ARBISCAN_API_KEY",
+    "deploy:arb:testnet": "forge script script/deploy_router_timelock.s.sol --target-contract DeployRouterTimeLock --fork-url \"https://sepolia-rollup.arbitrum.io/rpc\" --broadcast -vvvv --verify --ledger --mnemonic-derivation-paths \"m/44'/60'/0'/0/1\" --sender 0x2508b97B8041960ccA8AaBC7662F07EC8e285F6d --etherscan-api-key $ARBISCAN_API_KEY",
+    "deploy:arb": "forge script script/deploy_router_timelock.s.sol --target-contract DeployRouterTimeLock --fork-url https://arb1.arbitrum.io/rpc --broadcast -vvvv --verify --ledger --mnemonic-derivation-paths \"m/44'/60'/0'/0/1\" --sender 0x2508b97B8041960ccA8AaBC7662F07EC8e285F6d --etherscan-api-key $ARBISCAN_API_KEY",
+    "deploy:arb:quoter": "forge script script/deploy_quoter.s.sol --target-contract DeployQuoter --fork-url https://arb1.arbitrum.io/rpc --broadcast -vvvv --verify --ledger --mnemonic-derivation-paths \"m/44'/60'/0'/0/1\" --sender 0x2508b97B8041960ccA8AaBC7662F07EC8e285F6d --etherscan-api-key $ARBISCAN_API_KEY",
+    "deploy:avax": "forge script script/deploy_router_timelock.s.sol --target-contract DeployRouterTimeLock --fork-url https://api.avax.network/ext/bc/C/rpc --etherscan-api-key VYGA1S49Z5GYUX9U5B5VNNCRS5X55IFVQ1 --broadcast -vvvv --verify --ledger --mnemonic-derivation-paths \"m/44'/60'/0'/0/1\" --sender 0x2508b97B8041960ccA8AaBC7662F07EC8e285F6d",
+    "deploy:avax:quoter": "forge script script/deploy_quoter.s.sol --target-contract DeployQuoter --fork-url https://api.avax.network/ext/bc/C/rpc --broadcast -vvvv --verify --ledger --mnemonic-derivation-paths \"m/44'/60'/0'/0/1\" --sender 0x2508b97B8041960ccA8AaBC7662F07EC8e285F6d --etherscan-api-key $ARBISCAN_API_KEY",
     "eslint": "npm run eslint:check",
     "eslint:check": "eslint scripts",
     "eslint:fix": "eslint scripts --fix",
@@ -65,7 +68,7 @@
     "@proxima-oss/eslint-config": "6.0.1",
     "markdownlint-cli": "0.32.2",
     "prettier": "2.7.1",
-    "solhint": "3.3.8",
+    "solhint": "5.0.5",
     "ts-node": "10.9.1"
   }
 }

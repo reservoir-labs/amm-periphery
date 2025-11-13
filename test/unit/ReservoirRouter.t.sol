@@ -203,10 +203,13 @@ contract ReservoirRouterTest is BaseTest {
         assertApproxEqRel(lAmountA.divWadDown(lAmountC), lTokenAMintAmt.divWadDown(lTokenCMintAmt), 0.00001e18); // 0.1 bp
     }
 
-    function testAddLiquidity_CreatePair_SP(uint256 aTokenAMintAmt, uint256 aTokenCMintAmt) public {
+    function testAddLiquidity_CreatePair_SP(uint256 aTokenAMintAmt, uint256 aTokenCMintAmt) external {
+        // assume
         uint256 lTokenAMintAmt = bound(aTokenAMintAmt, 1e6, type(uint104).max);
         uint256 lTokenCMintAmt =
             bound(aTokenCMintAmt, lTokenAMintAmt / 1e3, Math.min(type(uint104).max, lTokenAMintAmt * 1e3));
+
+        // arrange
         _tokenA.mint(_bob, lTokenAMintAmt);
         _tokenC.mint(_bob, lTokenCMintAmt);
         vm.startPrank(_bob);
@@ -229,14 +232,15 @@ contract ReservoirRouterTest is BaseTest {
         assertEq(lAmountC, lTokenCMintAmt);
         assertEq(_tokenA.balanceOf(address(lPair)), lTokenAMintAmt);
         assertEq(_tokenC.balanceOf(address(lPair)), lTokenCMintAmt);
+        vm.stopPrank();
     }
 
     function testAddLiquidity_OptimalLessThanMin() public {
         // act & assert
-        vm.expectRevert("RR: INSUFFICIENT_A_AMOUNT");
+        vm.expectRevert(ReservoirRouter.RR_InsufficientAAmount.selector);
         _router.addLiquidity(address(_tokenA), address(_tokenB), 1, 101e18, 99e18, 100e18, 100e18, _bob);
 
-        vm.expectRevert("RR: INSUFFICIENT_B_AMOUNT");
+        vm.expectRevert(ReservoirRouter.RR_InsufficientBAmount.selector);
         _router.addLiquidity(address(_tokenA), address(_tokenB), 1, 99e18, 101e18, 100e18, 100e18, _bob);
     }
 
@@ -314,12 +318,12 @@ contract ReservoirRouterTest is BaseTest {
         _stablePair.approve(address(_router), lAmountToBurn);
 
         // act & assert
-        vm.expectRevert("RR: INSUFFICIENT_A_AMOUNT");
+        vm.expectRevert(ReservoirRouter.RR_InsufficientAAmount.selector);
         _router.removeLiquidity(
             address(_tokenA), address(_tokenB), 1, lAmountToBurn, lAmountToBurn / 2 + 1, 0, address(this)
         );
 
-        vm.expectRevert("RR: INSUFFICIENT_B_AMOUNT");
+        vm.expectRevert(ReservoirRouter.RR_InsufficientBAmount.selector);
         _router.removeLiquidity(
             address(_tokenA), address(_tokenB), 1, lAmountToBurn, 0, lAmountToBurn / 2 + 1, address(this)
         );
@@ -396,7 +400,7 @@ contract ReservoirRouterTest is BaseTest {
         assertGt(_tokenB.balanceOf(_bob), 0);
 
         // act & assert
-        vm.expectRevert("RR: INSUFFICIENT_OUTPUT_AMOUNT");
+        vm.expectRevert(ReservoirRouter.RR_InsufficientOutputAmount.selector);
         _router.swapExactForVariable(lAmtIn, lAmountOutMin, lPath, lCurveIds, address(this));
     }
 

@@ -4,7 +4,7 @@ import "amm-core/test/__fixtures/BaseTest.sol";
 
 import { WETH } from "solmate/tokens/WETH.sol";
 import { ReservoirRouter } from "src/ReservoirRouter.sol";
-import { TestERC20PermitAllowed } from "test/dummy/TestERC20PermitAllowed.sol";
+import { TestERC20PermitAllowed, ERC20Permit } from "test/dummy/TestERC20PermitAllowed.sol";
 
 contract SelfPermitTest is BaseTest {
     WETH private _weth = new WETH();
@@ -88,7 +88,7 @@ contract SelfPermitTest is BaseTest {
 
         // act & assert
         vm.prank(_owner);
-        vm.expectRevert("ERC20Permit: invalid signature");
+        vm.expectPartialRevert(ERC20Permit.ERC2612InvalidSigner.selector);
         _router.selfPermit(address(_testERC20), lValue, lDeadline, lV, lR, lS);
     }
 

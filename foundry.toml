@@ -1,5 +1,6 @@
 [profile.default]
-solc           = "0.8.19"
+solc           = "0.8.28"
+via-ir         = true
 bytecode_hash  = "ipfs"
 optimizer_runs = 1_000_000
 libs = ['lib']

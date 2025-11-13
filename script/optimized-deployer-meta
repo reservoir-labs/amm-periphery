@@ -1,6 +1,5 @@
 {
-  "constant_product_hash": "0x870a9e40cc3b276ba194c85e84aa6eeabc8a8fdea9c88176b0e9f865917b053b",
-  "factory_hash": "0xfdd26a92c62ba8a24834e10a8e9240f71cadf4fbc3c9eb4ca9b7a53757bdf079",
-  "oracle_caller_hash": "0xcb93c810b33357ab0beefa347663e9551151684d840b0689ff8e2f066ad0b85c",
-  "stable_hash": "0xd49a6c02119172299f679d4e447daddf21af4e66d45461cf823008f4a72ca299"
+  "constant_product_hash": "0x26446df4df81e9a17a081864136f86aef55431e34d209f9426b0a5c77b71cf03",
+  "factory_hash": "0xfa89dd6adcebc57eba3d71110a1198252891638f715eb114bae596c0fa5a7b35",
+  "stable_hash": "0x6510cb12bb6c0d239e3a5eacb358feacb86c467e9e32cab49a844b29a1978cff"
 }

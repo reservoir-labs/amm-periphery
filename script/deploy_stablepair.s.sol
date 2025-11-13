@@ -7,7 +7,6 @@ import { GenericFactory, IERC20 } from "amm-core/src/GenericFactory.sol";
 import { FactoryStoreLib } from "amm-core/src/libraries/FactoryStore.sol";
 import { Constants } from "amm-core/src/Constants.sol";
 import { StablePair } from "amm-core/src/curve/stable/StablePair.sol";
-import { StableMintBurn } from "amm-core/src/curve/stable/StableMintBurn.sol";
 import { MintableERC20 } from "amm-core/test/__fixtures/MintableERC20.sol";
 
 uint256 constant DEFAULT_SWAP_FEE_SP = 100; // 0.01%

@@ -4,20 +4,26 @@ pragma solidity ^0.8.0;
 import { ReservoirPair } from "amm-core/src/ReservoirPair.sol";
 import { IGenericFactory, IERC20 } from "amm-core/src/interfaces/IGenericFactory.sol";
 import { ExtraData } from "src/interfaces/IQuoter.sol";
-
-import { ConstantProductPair } from "amm-core/src/curve/constant-product/ConstantProductPair.sol";
 import { StablePair } from "amm-core/src/curve/stable/StablePair.sol";
-
 import { StableMath } from "amm-core/src/libraries/StableMath.sol";
 
 library ReservoirLibrary {
     uint256 public constant FEE_ACCURACY = 1_000_000;
 
+    error RL_IdenticalAddresses();
+    error RL_ZeroAddress();
+    error RL_InsufficientAmount();
+    error RL_InsufficientLiquidity();
+    error RL_InvalidPath();
+    error RL_CurveIdsInvalidLength();
+    error RL_InsufficientInputAmount();
+    error RL_InsufficientOutputAmount();
+
     // returns sorted token addresses, used to handle return values from pairs sorted in this order
     function sortTokens(address aTokenA, address aTokenB) internal pure returns (address rToken0, address rToken1) {
-        require(aTokenA != aTokenB, "RL: IDENTICAL_ADDRESSES");
+        require(aTokenA != aTokenB, RL_IdenticalAddresses());
         (rToken0, rToken1) = aTokenA < aTokenB ? (aTokenA, aTokenB) : (aTokenB, aTokenA);
-        require(rToken0 != address(0), "RL: ZERO_ADDRESS");
+        require(rToken0 != address(0), RL_ZeroAddress());
     }
 
     /// @notice queries the factory for the actual pair address
@@ -62,8 +68,8 @@ library ReservoirLibrary {
     // given some amount of an asset and pair reserves, returns an equivalent amount of the other asset
     // this works for both ConstantProduct and Stable pairs
     function quote(uint256 aAmountA, uint256 aReserveA, uint256 aReserveB) internal pure returns (uint256 rAmountB) {
-        require(aAmountA > 0, "RL: INSUFFICIENT_AMOUNT");
-        require(aReserveA > 0 && aReserveB > 0, "RL: INSUFFICIENT_LIQUIDITY");
+        require(aAmountA > 0, RL_InsufficientAmount());
+        require(aReserveA > 0 && aReserveB > 0, RL_InsufficientLiquidity());
         unchecked {
             rAmountB = aAmountA * aReserveB / aReserveA;
         }
@@ -86,8 +92,8 @@ library ReservoirLibrary {
         pure
         returns (uint256 rAmountOut)
     {
-        require(aAmountIn > 0, "RL: INSUFFICIENT_INPUT_AMOUNT");
-        require(aReserveIn > 0 && aReserveOut > 0, "RL: INSUFFICIENT_LIQUIDITY");
+        require(aAmountIn > 0, RL_InsufficientInputAmount());
+        require(aReserveIn > 0 && aReserveOut > 0, RL_InsufficientLiquidity());
         uint256 lAmountInWithFee = aAmountIn * (FEE_ACCURACY - aSwapFee);
         uint256 lNumerator = lAmountInWithFee * aReserveOut;
         uint256 lDenominator = aReserveIn * FEE_ACCURACY + lAmountInWithFee;
@@ -99,8 +105,8 @@ library ReservoirLibrary {
         pure
         returns (uint256 rAmountIn)
     {
-        require(aAmountOut > 0, "RL: INSUFFICIENT_OUTPUT_AMOUNT");
-        require(aReserveIn > 0 && aReserveOut > 0, "RL: INSUFFICIENT_LIQUIDITY");
+        require(aAmountOut > 0, RL_InsufficientOutputAmount());
+        require(aReserveIn > 0 && aReserveOut > 0, RL_InsufficientLiquidity());
         uint256 lNumerator = aReserveIn * aAmountOut * FEE_ACCURACY;
         uint256 lDenominator = (aReserveOut - aAmountOut) * (FEE_ACCURACY - aSwapFee);
         rAmountIn = (lNumerator / lDenominator) + 1;
@@ -113,15 +119,15 @@ library ReservoirLibrary {
         uint256 aSwapFee,
         ExtraData memory aData
     ) internal pure returns (uint256 rAmountOut) {
-        require(aAmountIn > 0, "RL: INSUFFICIENT_INPUT_AMOUNT");
-        require(aReserveIn > 0 && aReserveOut > 0, "RL: INSUFFICIENT_LIQUIDITY");
+        require(aAmountIn > 0, RL_InsufficientInputAmount());
+        require(aReserveIn > 0 && aReserveOut > 0, RL_InsufficientLiquidity());
 
         rAmountOut = StableMath._getAmountOut(
             aAmountIn,
             aReserveIn,
             aReserveOut,
-            aData.token0PrecisionMultiplier,
-            aData.token1PrecisionMultiplier,
+            aData.tokenInPrecisionMultiplier,
+            aData.tokenOutPrecisionMultiplier,
             true,
             aSwapFee,
             2 * aData.amplificationCoefficient
@@ -135,15 +141,15 @@ library ReservoirLibrary {
         uint256 aSwapFee,
         ExtraData memory aData
     ) internal pure returns (uint256 rAmountIn) {
-        require(aAmountOut > 0, "RL: INSUFFICIENT_OUTPUT_AMOUNT");
-        require(aReserveIn > 0 && aReserveOut > 0, "RL: INSUFFICIENT_LIQUIDITY");
+        require(aAmountOut > 0, RL_InsufficientOutputAmount());
+        require(aReserveIn > 0 && aReserveOut > 0, RL_InsufficientLiquidity());
 
         rAmountIn = StableMath._getAmountIn(
             aAmountOut,
             aReserveIn,
             aReserveOut,
-            aData.token0PrecisionMultiplier,
-            aData.token1PrecisionMultiplier,
+            aData.tokenInPrecisionMultiplier,
+            aData.tokenOutPrecisionMultiplier,
             false,
             aSwapFee,
             2 * aData.amplificationCoefficient
@@ -156,9 +162,9 @@ library ReservoirLibrary {
         view
         returns (uint256[] memory rAmounts)
     {
-        require(aPath.length >= 2, "RL: INVALID_PATH");
-        require(aCurveIds.length == aPath.length - 1, "RL: CURVE_IDS_INVALID_LENGTH");
-        rAmounts = new uint[](aPath.length);
+        require(aPath.length >= 2, RL_InvalidPath());
+        require(aCurveIds.length == aPath.length - 1, RL_CurveIdsInvalidLength());
+        rAmounts = new uint256[](aPath.length);
         rAmounts[0] = aAmountIn;
         for (uint256 i = 0; i < aPath.length - 1;) {
             (uint256 lReserveIn, uint256 lReserveOut) = getReserves(aFactory, aPath[i], aPath[i + 1], aCurveIds[i]);
@@ -186,9 +192,9 @@ library ReservoirLibrary {
         view
         returns (uint256[] memory rAmounts)
     {
-        require(aPath.length >= 2, "RL: INVALID_PATH");
-        require(aCurveIds.length == aPath.length - 1, "RL: CURVE_IDS_INVALID_LENGTH");
-        rAmounts = new uint[](aPath.length);
+        require(aPath.length >= 2, RL_InvalidPath());
+        require(aCurveIds.length == aPath.length - 1, RL_CurveIdsInvalidLength());
+        rAmounts = new uint256[](aPath.length);
         rAmounts[rAmounts.length - 1] = aAmountOut;
         for (uint256 i = aPath.length - 1; i > 0;) {
             (uint256 lReserveIn, uint256 lReserveOut) = getReserves(aFactory, aPath[i - 1], aPath[i], aCurveIds[i - 1]);

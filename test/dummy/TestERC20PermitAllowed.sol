@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.0;
 
-import { ERC20Permit, ERC20 } from "@openzeppelin/token/ERC20/extensions/draft-ERC20Permit.sol";
+import { ERC20Permit, ERC20 } from "@openzeppelin/token/ERC20/extensions/ERC20Permit.sol";
 import { IERC20PermitAllowed } from "src/interfaces/IERC20PermitAllowed.sol";
 
 /// @dev this class exposes the EIP-2612 type of permit function as well as the "allowed" type of permit function
