@@ -43,6 +43,8 @@ jobs:
         with:
           version: stable
       - run: npm run test:unit
+      - run: cat script/optimized-deployer-meta
+        if: always()
 
   check-gas:
     runs-on: ubuntu-latest
