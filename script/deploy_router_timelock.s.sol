@@ -6,9 +6,9 @@ import "forge-std/Script.sol";
 import { ReservoirRouter } from "src/ReservoirRouter.sol";
 import { ReservoirTimelock } from "amm-core/src/ReservoirTimelock.sol";
 
-contract DeployRouterTimeLockAaveManager is Script {
-    address internal constant FACTORY = 0xDd723D9273642D82c5761a4467fD5265d94a22da;
-    address internal constant WETH_AVAX_MAINNET = 0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7;
+contract DeployRouterTimeLock is Script {
+    address internal constant FACTORY = 0x1A49Bc8464731A08c16EdF17F33CF77db37228a4;
+    address internal constant WETH = 0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7;
 
     function run() external {
         vm.startBroadcast(msg.sender);
@@ -18,13 +18,13 @@ contract DeployRouterTimeLockAaveManager is Script {
     }
 
     function _deployRouter() internal {
-        ReservoirRouter lRouter = new ReservoirRouter(FACTORY, WETH_AVAX_MAINNET);
+        ReservoirRouter lRouter = new ReservoirRouter(FACTORY, WETH);
         require(address(lRouter.FACTORY()) == FACTORY);
-        require(address(lRouter.WETH()) == WETH_AVAX_MAINNET);
+        require(address(lRouter.WETH()) == WETH);
     }
 
     function _deployTimelock() internal {
         ReservoirTimelock lTimelock = new ReservoirTimelock();
-        require(lTimelock.delay() == 2 days);
+        require(lTimelock.delay() == 2 days, "timelock delay mismatch");
     }
 }

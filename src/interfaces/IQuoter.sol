@@ -2,8 +2,8 @@
 pragma solidity ^0.8.0;
 
 struct ExtraData {
-    uint64 token0PrecisionMultiplier;
-    uint64 token1PrecisionMultiplier;
+    uint64 tokenInPrecisionMultiplier;
+    uint64 tokenOutPrecisionMultiplier;
     uint64 amplificationCoefficient;
 }
 
